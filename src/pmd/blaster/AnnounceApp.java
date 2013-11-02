@@ -17,12 +17,20 @@ public class AnnounceApp extends javax.swing.JFrame
         initComponents();
         this.setLocationRelativeTo(null);
         
+        DBManager.initDB(false);
+        
+        AnnounceEngine.googleuser = DBManager.getPreference("googleuser");
+        AnnounceEngine.smtpserver = DBManager.getPreference("smtpserver");
+        AnnounceEngine.smtpport = DBManager.getPreference("smtpport");
+        
+        AnnounceEngine.setPass(DBManager.getPreference("googlepass"));
+        
         openCSVatStart();
         
         refreshRosters();
         refreshList();
     }
-   
+    
     private void openCSVatStart()
     {
         File dir = new File("./");
