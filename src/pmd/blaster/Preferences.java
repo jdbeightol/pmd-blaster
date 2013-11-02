@@ -14,6 +14,20 @@ public class Preferences extends javax.swing.JDialog
         this.jTextField2.setText(AnnounceEngine.smtpserver);
         this.jTextField3.setText(AnnounceEngine.smtpport);
     }
+    
+    private void updatePreferences()
+    {
+        AnnounceEngine.googleuser = this.jTextField1.getText();
+        AnnounceEngine.smtpserver = this.jTextField2.getText();
+        AnnounceEngine.smtpport = this.jTextField3.getText();
+        
+        DBManager.savePreference("googleuser", AnnounceEngine.googleuser);
+        DBManager.savePreference("smtpserver", AnnounceEngine.smtpserver);
+        DBManager.savePreference("smtpport", AnnounceEngine.smtpport);
+        
+        if(!"".equals(this.jPasswordField1.getPassword().toString()))
+            AnnounceEngine.setPass(String.valueOf(this.jPasswordField1.getPassword()));
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -122,12 +136,7 @@ public class Preferences extends javax.swing.JDialog
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
     {//GEN-HEADEREND:event_jButton1ActionPerformed
-        AnnounceEngine.googleuser = this.jTextField1.getText();
-        AnnounceEngine.smtpserver = this.jTextField2.getText();
-        AnnounceEngine.smtpport = this.jTextField3.getText();
-        
-        if(!"".equals(this.jPasswordField1.getPassword()))
-            AnnounceEngine.setPass(String.valueOf(this.jPasswordField1.getPassword()));
+        this.updatePreferences();
         
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
