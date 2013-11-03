@@ -1,8 +1,8 @@
 package pmd.blaster;
 
-public class Preferences extends javax.swing.JDialog
+public class PreferencesForm extends javax.swing.JDialog
 {
-    public Preferences(java.awt.Frame parent, boolean modal)
+    public PreferencesForm(java.awt.Frame parent, boolean modal)
     {
         super(parent, modal);
         initComponents();
@@ -10,23 +10,23 @@ public class Preferences extends javax.swing.JDialog
         this.getRootPane().setDefaultButton(this.jButton1);
         this.setLocationRelativeTo(null);
         
-        this.jTextField1.setText(AnnounceEngine.googleuser);
-        this.jTextField2.setText(AnnounceEngine.smtpserver);
-        this.jTextField3.setText(AnnounceEngine.smtpport);
+        this.jTextField1.setText(BlasterEngine.googleuser);
+        this.jTextField2.setText(BlasterEngine.smtpserver);
+        this.jTextField3.setText(BlasterEngine.smtpport);
     }
     
     private void updatePreferences()
     {
-        AnnounceEngine.googleuser = this.jTextField1.getText();
-        AnnounceEngine.smtpserver = this.jTextField2.getText();
-        AnnounceEngine.smtpport = this.jTextField3.getText();
+        BlasterEngine.googleuser = this.jTextField1.getText();
+        BlasterEngine.smtpserver = this.jTextField2.getText();
+        BlasterEngine.smtpport = this.jTextField3.getText();
         
-        DBManager.savePreference("googleuser", AnnounceEngine.googleuser);
-        DBManager.savePreference("smtpserver", AnnounceEngine.smtpserver);
-        DBManager.savePreference("smtpport", AnnounceEngine.smtpport);
+        DatabaseEngine.savePreference("googleuser", BlasterEngine.googleuser);
+        DatabaseEngine.savePreference("smtpserver", BlasterEngine.smtpserver);
+        DatabaseEngine.savePreference("smtpport", BlasterEngine.smtpport);
         
         if(!"".equals(this.jPasswordField1.getPassword().toString()))
-            AnnounceEngine.setPass(String.valueOf(this.jPasswordField1.getPassword()));
+            BlasterEngine.setPass(String.valueOf(this.jPasswordField1.getPassword()));
     }
 
     @SuppressWarnings("unchecked")
@@ -168,16 +168,16 @@ public class Preferences extends javax.swing.JDialog
             }
         } catch (ClassNotFoundException ex)
         {
-            java.util.logging.Logger.getLogger(Preferences.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PreferencesForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex)
         {
-            java.util.logging.Logger.getLogger(Preferences.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PreferencesForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex)
         {
-            java.util.logging.Logger.getLogger(Preferences.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PreferencesForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex)
         {
-            java.util.logging.Logger.getLogger(Preferences.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PreferencesForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -186,7 +186,7 @@ public class Preferences extends javax.swing.JDialog
         {
             public void run()
             {
-                Preferences dialog = new Preferences(new javax.swing.JFrame(), true);
+                PreferencesForm dialog = new PreferencesForm(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter()
                 {
                     @Override

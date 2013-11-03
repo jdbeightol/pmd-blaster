@@ -2,24 +2,17 @@
 package pmd.blaster;
 
 import java.awt.Cursor;
-import java.io.IOException;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 
-import static java.nio.file.StandardCopyOption.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.LinkedList;
 
-public class AddRoster extends javax.swing.JDialog
+public class AddRosterForm extends javax.swing.JDialog
 {
     protected String newRoster = "";
 
-    public AddRoster(java.awt.Frame parent, boolean modal)
+    public AddRosterForm(java.awt.Frame parent, boolean modal)
     {
         super(parent, modal);
         
@@ -30,7 +23,7 @@ public class AddRoster extends javax.swing.JDialog
         this.getRootPane().setDefaultButton(this.jButton1);
         this.setLocationRelativeTo(null);
         
-        for(String s : AnnounceEngine.getRosters())
+        for(String s : BlasterEngine.getRosters())
             model.addElement(s);
         
         this.jList1.setModel(model);
@@ -164,19 +157,10 @@ public class AddRoster extends javax.swing.JDialog
             
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             
-            AnnounceEngine.addRoster(rName, Contact.parseCSVFile(filename));
-            try
-            {
-                Files.copy(Paths.get(filename), Paths.get("./" + rName + ".csv"), 
-                        new CopyOption[]
-                        {
-                            StandardCopyOption.COPY_ATTRIBUTES,
-                            StandardCopyOption.REPLACE_EXISTING
-                        });
-            } catch (IOException e)
-            {
-                System.out.println("[WARNING] CSV File could not be copied.");
-            }
+            LinkedList<Contact> roster = Contact.parseCSVFile(filename);
+            
+            BlasterEngine.addRoster(rName, roster);
+            DatabaseEngine.saveRosters(rName, roster);
 
             this.setCursor(Cursor.getDefaultCursor());
 
@@ -209,16 +193,16 @@ public class AddRoster extends javax.swing.JDialog
             }
         } catch (ClassNotFoundException ex)
         {
-            java.util.logging.Logger.getLogger(AddRoster.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddRosterForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex)
         {
-            java.util.logging.Logger.getLogger(AddRoster.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddRosterForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex)
         {
-            java.util.logging.Logger.getLogger(AddRoster.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddRosterForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex)
         {
-            java.util.logging.Logger.getLogger(AddRoster.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddRosterForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -227,7 +211,7 @@ public class AddRoster extends javax.swing.JDialog
         {
             public void run()
             {
-                AddRoster dialog = new AddRoster(new javax.swing.JFrame(), true);
+                AddRosterForm dialog = new AddRosterForm(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter()
                 {
                     @Override

@@ -8,24 +8,16 @@ import java.util.LinkedList;
 
 import javax.swing.DefaultListModel;
 
-public class AnnounceApp extends javax.swing.JFrame
+public class BlasterApp extends javax.swing.JFrame
 {
     private String currentRoster = "";
     
-    public AnnounceApp()
+    public BlasterApp()
     {
         initComponents();
         this.setLocationRelativeTo(null);
         
-        DBManager.initDB(false);
-        
-        AnnounceEngine.googleuser = DBManager.getPreference("googleuser");
-        AnnounceEngine.smtpserver = DBManager.getPreference("smtpserver");
-        AnnounceEngine.smtpport = DBManager.getPreference("smtpport");
-        
-        AnnounceEngine.setPass(DBManager.getPreference("googlepass"));
-        
-        openCSVatStart();
+        BlasterEngine.initBlaster();
         
         refreshRosters();
         refreshList();
@@ -43,7 +35,7 @@ public class AnnounceApp extends javax.swing.JFrame
                 return name.toLowerCase().endsWith(".csv");
             }
         }))
-            AnnounceEngine.addRoster(f.getName().substring(0, 
+            BlasterEngine.addRoster(f.getName().substring(0, 
                     f.getName().lastIndexOf(".")),
                     Contact.parseCSVFile(f.getAbsolutePath()));
     }
@@ -52,14 +44,14 @@ public class AnnounceApp extends javax.swing.JFrame
     {
         this.jComboBox1.removeAllItems();
         
-        for(String s : AnnounceEngine.getRosters())
+        for(String s : BlasterEngine.getRosters())
             this.jComboBox1.addItem(s);
     }
     
     private void refreshList()
     {
         DefaultListModel model = new DefaultListModel();
-        LinkedList<Contact> bros = AnnounceEngine.getRoster(currentRoster);
+        LinkedList<Contact> bros = BlasterEngine.getRoster(currentRoster);
         
         if(bros != null)
             for(Contact c : bros)
@@ -136,6 +128,7 @@ public class AnnounceApp extends javax.swing.JFrame
 
         jCheckBox3.setSelected(true);
         jCheckBox3.setText("Facebook");
+        jCheckBox3.setEnabled(false);
 
         jLabel1.setText("0");
 
@@ -279,16 +272,13 @@ public class AnnounceApp extends javax.swing.JFrame
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jButton1MouseClicked
     {//GEN-HEADEREND:event_jButton1MouseClicked
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        LinkedList<Contact> a = AnnounceEngine.getRoster(this.currentRoster);
-        
-        //LinkedList<Contact> a = new LinkedList<>();
-        //a.add(new Contact("Jeremy","Beightol","jdbeightol@gmail.com","814-769-3597"));
+        LinkedList<Contact> a = BlasterEngine.getRoster(this.currentRoster);
         
         String msg = this.jTextArea1.getText();
         
-        if(this.jCheckBox1.isSelected()) AnnounceEngine.sendEmails(msg, a);
+        if(this.jCheckBox1.isSelected()) BlasterEngine.sendEmails(msg, a);
         if(this.jCheckBox2.isEnabled() && this.jCheckBox2.isSelected())
-            AnnounceEngine.sendSMS(msg, a);
+            BlasterEngine.sendSMS(msg, a);
         //if(this.jCheckBox3.isSelected()) AnnounceEngine.postFacebook(msg);
         
         this.jTextArea1.setText("");
@@ -304,7 +294,7 @@ public class AnnounceApp extends javax.swing.JFrame
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem1ActionPerformed
     {//GEN-HEADEREND:event_jMenuItem1ActionPerformed
-        AddRoster ar = new AddRoster(this, true);
+        AddRosterForm ar = new AddRosterForm(this, true);
         
         ar.setVisible(true);
         
@@ -326,7 +316,7 @@ public class AnnounceApp extends javax.swing.JFrame
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem3ActionPerformed
     {//GEN-HEADEREND:event_jMenuItem3ActionPerformed
-        Preferences pr = new Preferences(this, true);
+        PreferencesForm pr = new PreferencesForm(this, true);
         
         pr.setVisible(true);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
@@ -356,16 +346,16 @@ public class AnnounceApp extends javax.swing.JFrame
             }
         } catch (ClassNotFoundException ex)
         {
-            java.util.logging.Logger.getLogger(AnnounceApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BlasterApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex)
         {
-            java.util.logging.Logger.getLogger(AnnounceApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BlasterApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex)
         {
-            java.util.logging.Logger.getLogger(AnnounceApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BlasterApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex)
         {
-            java.util.logging.Logger.getLogger(AnnounceApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BlasterApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -375,7 +365,7 @@ public class AnnounceApp extends javax.swing.JFrame
             @Override
             public void run()
             {
-                new AnnounceApp().setVisible(true);
+                new BlasterApp().setVisible(true);
             }
         });
     }

@@ -26,7 +26,7 @@ import javax.mail.Message;
 
 import javax.swing.JOptionPane;
 
-public class AnnounceEngine
+public class BlasterEngine
 {
     public static String    googleuser      = PMDAccountInfo.googleuser,
                             smtpserver      = "smtp.gmail.com",
@@ -34,12 +34,24 @@ public class AnnounceEngine
     
     private static String   googlepass      = PMDAccountInfo.googlepass;
     
-    private static HashMap<String, LinkedList<Contact>> Roster;
+    private static HashMap<String, LinkedList<Contact>> Rosters;
     
+    public static void initBlaster()
+    {
+        DatabaseEngine.initDB(false);
+
+        googleuser = DatabaseEngine.getPreference("googleuser");
+        googlepass = DatabaseEngine.getPreference("googlepass");
+        smtpserver = DatabaseEngine.getPreference("smtpserver");
+        smtpport = DatabaseEngine.getPreference("smtpport");
+
+        Rosters = DatabaseEngine.getRosters();
+    }
+
     public static void setPass(String pass)
     {
         googlepass = pass;
-        DBManager.savePreference("googlepass", googlepass);
+        DatabaseEngine.savePreference("googlepass", googlepass);
     }
     
     public static void setConfig(String usr, String pass, String server, String port)
@@ -49,31 +61,31 @@ public class AnnounceEngine
     
     public static void addRoster(String name, LinkedList<Contact> ContactList)
     {
-        if(Roster == null)
-            Roster = new HashMap<>();
+        if(Rosters == null)
+            Rosters = new HashMap<>();
         
-        if(Roster.containsKey(name))
-            Roster.remove(name);
+        else if(Rosters.containsKey(name))
+            Rosters.remove(name);
         
-        Roster.put(name, ContactList);
+        Rosters.put(name, ContactList);
     }
     
     public static LinkedList<Contact> getRoster(String name)
     {
-        if(Roster == null)
-            Roster = new HashMap<>();
-
-        return Roster.get(name);
+        if(Rosters == null)
+            Rosters = new HashMap<>();
+        
+        return Rosters.get(name);
     }
     
     public static Set<String> getRosters()
     {
-        if(Roster == null)
-            Roster = new HashMap<>();
+        if(Rosters == null)
+            Rosters = new HashMap<>();
         
-        return Roster.keySet();
+        return Rosters.keySet();
     }
-    
+
     public static void sendEmails(String msg, LinkedList<Contact> people)
     {
         Properties smtpProp = new Properties();
@@ -139,7 +151,8 @@ public class AnnounceEngine
                 System.out.println("Sending text message to " 
                             + c.first + " " + c.last + ".");
                 
-                while(sendCount++ < 5 && !new JSONObject(voice.sendSMS(c.phone, msg)).getBoolean("ok"))
+                while(sendCount++ < 5 && !new JSONObject(voice.sendSMS(c.phone, 
+                        msg)).getBoolean("ok"))
                 {
                     System.out.println("[Warning] Message to " + c.first + " " 
                             + c.last + " failed.");    
@@ -173,21 +186,7 @@ public class AnnounceEngine
             throw new RuntimeException(e);
         }
     }
-    
-    public static void postFacebook(String msg)
-    {
-        AccessToken at = new DefaultFacebookClient().obtainAppAccessToken("214508892052301", "8266220a2c7b7ae8a33b4e589e8280cf");
-        System.out.println("My application access token: " + at.getAccessToken());
-        FacebookClient facebookClient = new DefaultFacebookClient(at.getAccessToken());
-
         
-        FacebookType publishMessageResponse
-                = facebookClient.publish("me/feed", FacebookType.class, 
-                Parameter.with("message", "Test."));
-        
-        System.out.println("Published message ID: " + publishMessageResponse.getId());
-    }
-    
     public static void getInbox()
     {
         //TODO Ugly as heck.  Needs work.
@@ -199,5 +198,21 @@ public class AnnounceEngine
         {
             throw new RuntimeException(e);
         }
+    }
+    
+    public static void postFacebook(String msg)
+    {
+        //TODO Does not work yet.  Needs Facebook user OAUTH Token.
+        AccessToken at = new DefaultFacebookClient().obtainAppAccessToken(
+                "214508892052301", "8266220a2c7b7ae8a33b4e589e8280cf");
+        System.out.println("My application access token: " + at.getAccessToken());
+        FacebookClient facebookClient = new DefaultFacebookClient(at.getAccessToken());
+
+        
+        FacebookType publishMessageResponse
+                = facebookClient.publish("me/feed", FacebookType.class, 
+                Parameter.with("message", "Test."));
+        
+        System.out.println("Published message ID: " + publishMessageResponse.getId());
     }
 }
