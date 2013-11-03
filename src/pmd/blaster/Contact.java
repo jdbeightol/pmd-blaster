@@ -28,46 +28,54 @@ public class Contact
         try
         {
             int firstIndex = -1, lastIndex = -1;
+            boolean bothInOne = false;
             BufferedReader csvBr = new BufferedReader(new FileReader(filename));
             String line;
             
             while((line = csvBr.readLine()) != null)
             {
-                String[] row = line.split(",");
-                
                 String first = "", last = "", email = "", phone = "";
+                String[] row = line.split(",");
 
                 for(int i = 0; i < row.length; i++)
                 {
-                    if(row[i].toLowerCase().matches("(!?.*(first|last))*name.*") 
+                    if(row[i].matches("1?-?\\d{3}-?\\d{3}-?\\d{4}"))
+                        phone = row[i];
+                    
+                    else if(row[i].matches("\\w+@\\w+(?:\\.\\w+)+"))
+                        email = row[i];
+                    
+                    else if(row[i].toLowerCase().matches(
+                            "(!?.*(first|last))*name.*") 
                             && firstIndex == -1 && lastIndex == -1)
-                        firstIndex = i;
+                    {   firstIndex = i; bothInOne = true;   }
+                    
                     else if(row[i].toLowerCase().matches(".*first.*") 
                             && firstIndex == -1)
                         firstIndex = i;
+                    
                     else if(row[i].toLowerCase().matches(".*last.*") 
                             && lastIndex == -1)
                         lastIndex = i;
-                    if(row[i].matches("1?-?\\d{3}-?\\d{3}-?\\d{4}"))
-                        phone = row[i];
-                    if(row[i].matches("\\w+@\\w+(?:\\.\\w+)+"))
-                        email = row[i];
                 }
                 
                 if(firstIndex != -1 && row.length > firstIndex) 
-                    first = row[firstIndex]; 
+                    first = row[firstIndex];
+                
                 if(lastIndex != -1 && row.length > lastIndex)
                     last = row[lastIndex];
                 
                 if(!(email.equals("") && phone.equals("")))
-                    people.add(new Contact(first,last,email,phone));
+                    people.add(new Contact(first.trim(),last.trim(),
+                            email.trim(),phone.trim()));
             }
             
             if(firstIndex == -1)
                 System.out.println("[Warning] Could not parse first names.");
             
-            if(lastIndex == -1)
-                System.out.println("[Warning] Could not parse last names.");            
+            if(lastIndex == -1 && !bothInOne)
+                System.out.println("[Warning] Could not parse last names."); 
+            
             try
             {
                 csvBr.close();
