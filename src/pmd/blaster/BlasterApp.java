@@ -15,6 +15,9 @@ public class BlasterApp extends javax.swing.JFrame
     public BlasterApp()
     {
         initComponents();
+        
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setWrapStyleWord(true);
         this.setLocationRelativeTo(null);
         
         BlasterEngine.initBlaster();

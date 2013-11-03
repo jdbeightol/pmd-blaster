@@ -1,8 +1,10 @@
 package pmd.blaster;
 
-import com.restfb.*;
 import com.restfb.FacebookClient.AccessToken;
+import com.restfb.DefaultFacebookClient;
 import com.restfb.types.FacebookType;
+import com.restfb.FacebookClient;
+import com.restfb.Parameter;
 
 import com.techventus.server.voice.Voice;
 
@@ -28,11 +30,11 @@ import javax.swing.JOptionPane;
 
 public class BlasterEngine
 {
-    public static String    googleuser      = PMDAccountInfo.googleuser,
+    public static String    googleuser      = "",
                             smtpserver      = "smtp.gmail.com",
                             smtpport        = "465";
     
-    private static String   googlepass      = PMDAccountInfo.googlepass;
+    private static String   googlepass      = "";
     
     private static HashMap<String, LinkedList<Contact>> Rosters;
     
