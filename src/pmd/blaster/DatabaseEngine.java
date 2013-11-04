@@ -51,7 +51,7 @@ public class DatabaseEngine
 
                 dbConn.createStatement().executeUpdate("CREATE TABLE "
                         + ((forceCreate)?"":"IF NOT EXISTS ") + "ROSTERS "
-                        + "(ID              INT PRIMARY KEY NOT NULL,"
+                        + "(ID              INTEGER PRIMARY KEY AUTOINCREMENT,"
                         + " ROSTER          VARCHAR(128) NOT NULL, "
                         + " FIRST           VARCHAR(32) NOT NULL, "
                         + " LAST            VARCHAR(32), "
@@ -84,6 +84,50 @@ public class DatabaseEngine
         {
             System.out.println("[ERROR] Could not initialize the DB Connection.");
         }
+    }
+    
+    public static void purgeRosters(boolean confirm, boolean certain, boolean positive)
+    {
+        try
+        {
+            if (confirm && certain && positive)
+            {
+                if (dbConn != null && !dbConn.isClosed())
+                {
+                    dbConn.createStatement().executeUpdate(
+                            "DROP TABLE IF EXISTS ROSTERS;");
+                } 
+                
+                else
+                    System.out.println("[ERROR] No database connection.");
+
+            }
+        } catch (SQLException e)
+        {
+            System.out.println("[ERROR] Could not purge rosters.");
+        } 
+    }
+
+    public static void purgePreferences(boolean confirm, boolean certain, boolean positive)
+    {
+        try
+        {
+            if (confirm && certain && positive)
+            {
+                if (dbConn != null && !dbConn.isClosed())
+                {
+                    dbConn.createStatement().executeUpdate(
+                            "DROP TABLE IF EXISTS PREFERENCES;");
+                } 
+                
+                else
+                    System.out.println("[ERROR] No database connection.");
+
+            }
+        } catch (SQLException e)
+        {
+            System.out.println("[ERROR] Could not purge preferences.");
+        } 
     }
     
     public static String getPreference(String Key)
@@ -132,7 +176,6 @@ public class DatabaseEngine
         } catch (SQLException e)
         {
             System.out.println("[ERROR] Could not insert preference into Database.");
-            e.printStackTrace();
         }
     }
     
@@ -178,16 +221,12 @@ public class DatabaseEngine
         try
         {
             if(dbConn != null && !dbConn.isClosed())
-            {
-                MessageDigest md = MessageDigest.getInstance("MD5");
-                
+            {               
                 for(Contact c : roster)
                 {
                     PreparedStatement prefStatement = dbConn.prepareStatement
                             (DB_InsertRost);
                     
-                    prefStatement.setString(1, md.digest((rosterName + c.first 
-                        + c.last + c.email + c.phone).getBytes()).toString());
                     prefStatement.setString(2, rosterName);
                     prefStatement.setString(3, c.first);
                     prefStatement.setString(4, c.last);
@@ -201,7 +240,7 @@ public class DatabaseEngine
             else
                 System.out.println("[WARNING] No database connection.");
 
-        } catch (SQLException | NoSuchAlgorithmException e)
+        } catch (SQLException e)
         {
             System.out.println("[ERROR] Could not add roster to the database.");
         }        

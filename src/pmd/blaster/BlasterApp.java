@@ -1,8 +1,6 @@
 package pmd.blaster;
 
 import java.awt.Cursor;
-import java.io.File;
-import java.io.FilenameFilter;
 
 import java.util.LinkedList;
 
@@ -24,23 +22,9 @@ public class BlasterApp extends javax.swing.JFrame
         
         refreshRosters();
         refreshList();
-    }
-    
-    private void openCSVatStart()
-    {
-        File dir = new File("./");
         
-        for(File f : dir.listFiles(new FilenameFilter() 
-        {
-            @Override
-            public boolean accept(File dir, String name) 
-            {
-                return name.toLowerCase().endsWith(".csv");
-            }
-        }))
-            BlasterEngine.addRoster(f.getName().substring(0, 
-                    f.getName().lastIndexOf(".")),
-                    Contact.parseCSVFile(f.getAbsolutePath()));
+        if(BlasterEngine.googleuser.equals("")) 
+            new PreferencesForm(this, true).setVisible(true);
     }
     
     private void refreshRosters()
@@ -88,6 +72,9 @@ public class BlasterApp extends javax.swing.JFrame
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("PMD Announce");
@@ -120,6 +107,13 @@ public class BlasterApp extends javax.swing.JFrame
             public void mouseClicked(java.awt.event.MouseEvent evt)
             {
                 jButton1MouseClicked(evt);
+            }
+        });
+        jButton1.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -205,6 +199,30 @@ public class BlasterApp extends javax.swing.JFrame
 
         jMenuBar1.add(jMenu2);
 
+        jMenu3.setText("Debug");
+
+        jMenuItem4.setText("Purge Rosters");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem4);
+
+        jMenuItem5.setText("Purge Preferences");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem5);
+
+        jMenuBar1.add(jMenu3);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -274,20 +292,7 @@ public class BlasterApp extends javax.swing.JFrame
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jButton1MouseClicked
     {//GEN-HEADEREND:event_jButton1MouseClicked
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        LinkedList<Contact> a = BlasterEngine.getRoster(this.currentRoster);
-        
-        String msg = this.jTextArea1.getText();
-        
-        if(this.jCheckBox1.isSelected()) BlasterEngine.sendEmails(msg, a);
-        if(this.jCheckBox2.isEnabled() && this.jCheckBox2.isSelected())
-            BlasterEngine.sendSMS(msg, a);
-        //if(this.jCheckBox3.isSelected()) AnnounceEngine.postFacebook(msg);
-        
-        this.jTextArea1.setText("");
-        this.jLabel1.setText("0");
-        
-        this.setCursor(Cursor.getDefaultCursor());
+
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -319,9 +324,7 @@ public class BlasterApp extends javax.swing.JFrame
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem3ActionPerformed
     {//GEN-HEADEREND:event_jMenuItem3ActionPerformed
-        PreferencesForm pr = new PreferencesForm(this, true);
-        
-        pr.setVisible(true);
+        new PreferencesForm(this, true).setVisible(true);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt)//GEN-FIRST:event_jComboBox1ItemStateChanged
@@ -329,6 +332,49 @@ public class BlasterApp extends javax.swing.JFrame
         currentRoster = (String)this.jComboBox1.getSelectedItem();        
         this.refreshList();
     }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
+    {//GEN-HEADEREND:event_jButton1ActionPerformed
+        final LinkedList<Contact> a = BlasterEngine.getRoster(this.currentRoster);
+        final String msg = this.jTextArea1.getText();
+        final boolean email = this.jCheckBox1.isEnabled()
+                              && this.jCheckBox1.isSelected(),                              
+                      text  = this.jCheckBox2.isEnabled() 
+                              && this.jCheckBox2.isSelected(),
+                      fbook = this.jCheckBox3.isEnabled()
+                              && this.jCheckBox3.isSelected();
+        
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        
+        WaitingForm.wait(this, "Sending messages...", new pmd.blaster.WaitingForm.Waitable()
+        {
+            @Override
+            public void execute()
+            {
+                if (email)
+                    BlasterEngine.sendEmails(msg, a);
+                if (text)
+                    BlasterEngine.sendSMS(msg, a);
+                if (fbook)
+                    BlasterEngine.postFacebook(msg);
+            }
+        });
+        
+        this.jTextArea1.setText("");
+        this.jLabel1.setText("0");
+        
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem4ActionPerformed
+    {//GEN-HEADEREND:event_jMenuItem4ActionPerformed
+        DatabaseEngine.purgeRosters(true, true, true);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem5ActionPerformed
+    {//GEN-HEADEREND:event_jMenuItem5ActionPerformed
+        DatabaseEngine.purgePreferences(true, true, true);
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     public static void main(String args[])
     {
@@ -382,10 +428,13 @@ public class BlasterApp extends javax.swing.JFrame
     private javax.swing.JList jList1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;

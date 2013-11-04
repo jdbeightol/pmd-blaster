@@ -42,11 +42,17 @@ public class BlasterEngine
     {
         DatabaseEngine.initDB(false);
 
+        String ss, sp;
+        
         googleuser = DatabaseEngine.getPreference("googleuser");
         googlepass = DatabaseEngine.getPreference("googlepass");
-        smtpserver = DatabaseEngine.getPreference("smtpserver");
-        smtpport = DatabaseEngine.getPreference("smtpport");
-
+        
+        ss = DatabaseEngine.getPreference("smtpserver");
+        sp = DatabaseEngine.getPreference("smtpport");
+        
+        smtpserver = ("".equals(ss))?"smtp.gmail.com":ss;
+        smtpport = ("".equals(sp))?"465":sp;
+        
         Rosters = DatabaseEngine.getRosters();
     }
 
