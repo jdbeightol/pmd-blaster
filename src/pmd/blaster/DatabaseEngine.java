@@ -21,7 +21,10 @@ public class DatabaseEngine
             
         DB_InsertRost
             = "REPLACE INTO ROSTERS (ID,ROSTER,FIRST,LAST,EMAIL,PHONE) "
-            + "VALUES (?,?,?,?,?,?);";
+            + "VALUES (?,?,?,?,?,?);",
+            
+        DB_RemoveRost
+            = "DELETE FROM ROSTERS WHERE ROSTER=?";
     
     private static void connectToDB()
     {
@@ -221,19 +224,25 @@ public class DatabaseEngine
         try
         {
             if(dbConn != null && !dbConn.isClosed())
-            {               
+            {
+                PreparedStatement remRost = dbConn.prepareStatement(DB_RemoveRost);
+                
+                remRost.setString(1, rosterName);
+                
+                remRost.executeUpdate();
+                
                 for(Contact c : roster)
                 {
-                    PreparedStatement prefStatement = dbConn.prepareStatement
+                    PreparedStatement addRoster = dbConn.prepareStatement
                             (DB_InsertRost);
                     
-                    prefStatement.setString(2, rosterName);
-                    prefStatement.setString(3, c.first);
-                    prefStatement.setString(4, c.last);
-                    prefStatement.setString(5, c.email);
-                    prefStatement.setString(6, c.phone);
+                    addRoster.setString(2, rosterName);
+                    addRoster.setString(3, c.first);
+                    addRoster.setString(4, c.last);
+                    addRoster.setString(5, c.email);
+                    addRoster.setString(6, c.phone);
 
-                    prefStatement.executeUpdate();
+                    addRoster.executeUpdate();
                 }
             }
             

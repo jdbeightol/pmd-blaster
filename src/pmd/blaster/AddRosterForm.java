@@ -10,8 +10,6 @@ import java.util.LinkedList;
 
 public class AddRosterForm extends javax.swing.JDialog
 {
-    protected String newRoster = "";
-
     public AddRosterForm(java.awt.Frame parent, boolean modal)
     {
         super(parent, modal);
@@ -30,6 +28,7 @@ public class AddRosterForm extends javax.swing.JDialog
         
         if(this.jList1.getModel().getSize() > 0)
             this.jList1.setSelectedIndex(0);
+        
         else
         {
             this.jList1.setEnabled(false);
@@ -191,16 +190,7 @@ public class AddRosterForm extends javax.swing.JDialog
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex)
-        {
-            java.util.logging.Logger.getLogger(AddRosterForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex)
-        {
-            java.util.logging.Logger.getLogger(AddRosterForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex)
-        {
-            java.util.logging.Logger.getLogger(AddRosterForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex)
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex)
         {
             java.util.logging.Logger.getLogger(AddRosterForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -209,6 +199,7 @@ public class AddRosterForm extends javax.swing.JDialog
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable()
         {
+            @Override
             public void run()
             {
                 AddRosterForm dialog = new AddRosterForm(new javax.swing.JFrame(), true);
@@ -224,6 +215,7 @@ public class AddRosterForm extends javax.swing.JDialog
             }
         });
     }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
