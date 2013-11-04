@@ -14,9 +14,13 @@ public class BlasterApp extends javax.swing.JFrame
     {
         initComponents();
         
+        if(!BlasterEngine.DEBUG)
+            this.jMenu3.setVisible(false);
+        
+        this.setLocationRelativeTo(null);
+
         jTextArea1.setLineWrap(true);
         jTextArea1.setWrapStyleWord(true);
-        this.setLocationRelativeTo(null);
         
         BlasterEngine.initBlaster();
         
@@ -49,7 +53,7 @@ public class BlasterApp extends javax.swing.JFrame
         
         this.jList1.setModel(model);
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents()
@@ -286,7 +290,6 @@ public class BlasterApp extends javax.swing.JFrame
     private void jTextArea1KeyTyped(java.awt.event.KeyEvent evt)//GEN-FIRST:event_jTextArea1KeyTyped
     {//GEN-HEADEREND:event_jTextArea1KeyTyped
         this.jLabel1.setText(Integer.toString(this.jTextArea1.getText().length()));
-        
         this.jCheckBox2.setEnabled(this.jTextArea1.getText().length() <= 160);
     }//GEN-LAST:event_jTextArea1KeyTyped
 

@@ -30,6 +30,8 @@ import javax.swing.JOptionPane;
 
 public class BlasterEngine
 {
+    public static final boolean DEBUG = false;
+    
     public static String    googleuser      = "",
                             smtpserver      = "smtp.gmail.com",
                             smtpport        = "465";
