@@ -1,7 +1,5 @@
 package pmd.blaster;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection;
@@ -13,6 +11,8 @@ import java.util.HashMap;
 
 public class DatabaseEngine
 {
+    public static final String VERSION = "0.2";
+
     public static Connection dbConn = null;
     
     private static final String
@@ -24,7 +24,11 @@ public class DatabaseEngine
             + "VALUES (?,?,?,?,?,?);",
             
         DB_RemoveRost
-            = "DELETE FROM ROSTERS WHERE ROSTER=?";
+            = "DELETE FROM ROSTERS WHERE ROSTER=?",
+            
+        DB_RemoveCont
+            = "DELETE FROM ROSTERS WHERE ROSTER=? AND FIRST=? AND LAST=?";
+        
     
     private static void connectToDB()
     {
@@ -219,7 +223,7 @@ public class DatabaseEngine
         return hashMapReturn;
     }
     
-    public static void saveRosters(String rosterName, LinkedList<Contact> roster) 
+    public static void saveRoster(String rosterName, LinkedList<Contact> roster) 
     {
         try
         {
@@ -244,6 +248,80 @@ public class DatabaseEngine
 
                     addRoster.executeUpdate();
                 }
+            }
+            
+            else
+                System.out.println("[WARNING] No database connection.");
+
+        } catch (SQLException e)
+        {
+            System.out.println("[ERROR] Could not add roster to the database.");
+        }        
+    }
+   
+    public static void removeRoster(String rosterName) 
+    {
+        try
+        {
+            if(dbConn != null && !dbConn.isClosed())
+            {
+                PreparedStatement remRost = dbConn.prepareStatement(DB_RemoveRost);
+                
+                remRost.setString(1, rosterName);
+                
+                remRost.executeUpdate();
+            }
+            
+            else
+                System.out.println("[WARNING] No database connection.");
+
+        } catch (SQLException e)
+        {
+            System.out.println("[ERROR] Could not add roster to the database.");
+        }        
+    }
+        
+    public static void saveContact(String rosterName, Contact c) 
+    {
+        try
+        {
+            if(dbConn != null && !dbConn.isClosed())
+            {
+                PreparedStatement addRoster = dbConn.prepareStatement
+                        (DB_InsertRost);
+
+                addRoster.setString(2, rosterName);
+                addRoster.setString(3, c.first);
+                addRoster.setString(4, c.last);
+                addRoster.setString(5, c.email);
+                addRoster.setString(6, c.phone);
+
+                addRoster.executeUpdate();
+            }
+            
+            else
+                System.out.println("[WARNING] No database connection.");
+
+        } catch (SQLException e)
+        {
+            System.out.println("[ERROR] Could not add roster to the database.");
+        }        
+    }
+    
+    public static void removeContact(String roster, Contact contact) 
+    {
+        try
+        {
+            if(dbConn != null && !dbConn.isClosed())
+            {
+                PreparedStatement addRoster = dbConn.prepareStatement
+                        (DB_RemoveCont);
+
+                addRoster.setString(1, roster);
+                addRoster.setString(2, contact.first);
+                addRoster.setString(3, contact.last);
+
+                addRoster.executeUpdate();
             }
             
             else

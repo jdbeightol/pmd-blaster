@@ -1,40 +1,41 @@
 package pmd.blaster;
 
-import com.restfb.FacebookClient.AccessToken;
 import com.restfb.DefaultFacebookClient;
-import com.restfb.types.FacebookType;
 import com.restfb.FacebookClient;
+import com.restfb.FacebookClient.AccessToken;
 import com.restfb.Parameter;
-
+import com.restfb.types.FacebookType;
 import com.techventus.server.voice.Voice;
-
 import gvjava.org.json.JSONException;
 import gvjava.org.json.JSONObject;
-
-import java.util.Properties;
-import java.util.LinkedList;
-import java.util.HashMap;
-import java.util.Set;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-
-import javax.mail.internet.InternetAddress;
-import javax.mail.PasswordAuthentication;
-import javax.mail.internet.MimeMessage;
-import javax.mail.MessagingException;
-import javax.mail.Transport;
-import javax.mail.Session;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Properties;
+import java.util.Set;
 import javax.mail.Message;
-
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
 
 public class BlasterEngine
 {
-    public static final boolean DEBUG = false;
+    public static final String VERSION = "0.2";
+    
+    public static boolean DEBUG = false;    
     
     public static String    googleuser      = "",
                             smtpserver      = "smtp.gmail.com",
-                            smtpport        = "465";
+                            smtpport        = "465",
+                            theme           = "";
     
     private static String   googlepass      = "";
     
@@ -55,6 +56,8 @@ public class BlasterEngine
         smtpserver = ("".equals(ss))?"smtp.gmail.com":ss;
         smtpport = ("".equals(sp))?"465":sp;
         
+        theme = DatabaseEngine.getPreference("theme");
+        
         Rosters = DatabaseEngine.getRosters();
     }
 
@@ -69,6 +72,18 @@ public class BlasterEngine
         googleuser = usr; googlepass = pass; smtpserver = server; smtpport = port;
     }
     
+    public static void purgeRosters(boolean confirm, boolean certain, boolean positive)
+    {
+        if (confirm && certain && positive)
+            Rosters = null;
+    }
+    
+    public static void purgePreferences(boolean confirm, boolean certain, boolean positive)
+    {
+        if (confirm && certain && positive)
+            googleuser = smtpserver = smtpport = googlepass = "";
+    }
+    
     public static void addRoster(String name, LinkedList<Contact> ContactList)
     {
         if(Rosters == null)
@@ -78,6 +93,15 @@ public class BlasterEngine
             Rosters.remove(name);
         
         Rosters.put(name, ContactList);
+    }
+    
+    public static void removeRoster(String name)
+    {
+        if(Rosters == null)
+            Rosters = new HashMap<>();
+        
+        else if(Rosters.containsKey(name))
+            Rosters.remove(name);
     }
     
     public static LinkedList<Contact> getRoster(String name)
@@ -94,6 +118,18 @@ public class BlasterEngine
             Rosters = new HashMap<>();
         
         return Rosters.keySet();
+    }
+    
+    public static void addContact(String roster, Contact contact)
+    {
+        LinkedList<Contact> r = getRoster(roster);
+        r.add(contact);
+        sort(r);
+    }
+    
+    public static void removeContact(String roster, Contact contact)
+    {
+        getRoster(roster).remove(contact);
     }
 
     public static void sendEmails(String msg, LinkedList<Contact> people)
@@ -137,7 +173,8 @@ public class BlasterEngine
             
             System.out.println("Sending email...");
             
-            Transport.send(message);
+            if(!DEBUG)
+                Transport.send(message);
             
             System.out.println("[Success] Email sent.");
         } catch(MessagingException e)
@@ -161,30 +198,33 @@ public class BlasterEngine
                 System.out.println("Sending text message to " 
                             + c.first + " " + c.last + ".");
                 
-                while(sendCount++ < 5 && !new JSONObject(voice.sendSMS(c.phone, 
-                        msg)).getBoolean("ok"))
+                if(!DEBUG)
                 {
-                    System.out.println("[Warning] Message to " + c.first + " " 
-                            + c.last + " failed.");    
-                    
-                    try
+                    while(sendCount++ < 5 && !new JSONObject(voice.sendSMS(
+                            c.phone, msg)).getBoolean("ok"))
                     {
-                        Thread.sleep(1000 * 15);
+                        System.out.println("[Warning] Message to " + c.first 
+                                + " " + c.last + " failed.");    
+
+                        try
+                        {
+                            Thread.sleep(1000 * 15);
+                        } catch (InterruptedException ex)
+                        {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+
+                    if(sendCount >= 5)
+                        errCount++;
+
+                    if(++totalCount % 5 == 0) try
+                    {
+                        Thread.sleep(1000*15);
                     } catch (InterruptedException ex)
                     {
                         Thread.currentThread().interrupt();
                     }
-                }
-                
-                if(sendCount >= 5)
-                    errCount++;
-                
-                if(++totalCount % 5 == 0) try
-                {
-                    Thread.sleep(1000*15);
-                } catch (InterruptedException ex)
-                {
-                    Thread.currentThread().interrupt();
                 }
             }
             
@@ -217,12 +257,90 @@ public class BlasterEngine
                 "214508892052301", "8266220a2c7b7ae8a33b4e589e8280cf");
         System.out.println("My application access token: " + at.getAccessToken());
         FacebookClient facebookClient = new DefaultFacebookClient(at.getAccessToken());
-
         
         FacebookType publishMessageResponse
                 = facebookClient.publish("me/feed", FacebookType.class, 
                 Parameter.with("message", "Test."));
         
         System.out.println("Published message ID: " + publishMessageResponse.getId());
+    }
+    
+public static LinkedList<Contact> parseCSVFile(String filename)
+    {
+        LinkedList<Contact> people = new LinkedList<>();
+        
+        try
+        {
+            int firstIndex = -1, lastIndex = -1;
+            boolean bothInOne = false;
+            BufferedReader csvBr = new BufferedReader(new FileReader(filename));
+            String line;
+            
+            while((line = csvBr.readLine()) != null)
+            {
+                String first = "", last = "", email = "", phone = "";
+                String[] row = line.split(",");
+
+                for(int i = 0; i < row.length; i++)
+                {
+                    if(row[i].matches("1?-?\\d{3}-?\\d{3}-?\\d{4}"))
+                        phone = row[i];
+                    
+                    else if(row[i].matches("\\w+@\\w+(?:\\.\\w+)+"))
+                        email = row[i];
+                    
+                    else if(row[i].toLowerCase().matches(
+                            "(!?.*(first|last))*name.*") 
+                            && firstIndex == -1 && lastIndex == -1)
+                    {   firstIndex = i; bothInOne = true;   }
+                    
+                    else if(row[i].toLowerCase().matches(".*first.*") 
+                            && firstIndex == -1)
+                        firstIndex = i;
+                    
+                    else if(row[i].toLowerCase().matches(".*last.*") 
+                            && lastIndex == -1)
+                        lastIndex = i;
+                }
+                
+                if(firstIndex != -1 && row.length > firstIndex) 
+                    first = row[firstIndex];
+                
+                if(lastIndex != -1 && row.length > lastIndex)
+                    last = row[lastIndex];
+                
+                if(!(email.equals("") && phone.equals("")))
+                    people.add(new Contact(first.trim(),last.trim(),
+                            email.trim(),phone.trim()));
+            }
+            
+            if(firstIndex == -1)
+                System.out.println("[Warning] Could not parse first names.");
+            
+            if(lastIndex == -1 && !bothInOne)
+                System.out.println("[Warning] Could not parse last names."); 
+            
+            try
+            {
+                csvBr.close();
+            } 
+            
+            catch(IOException e) 
+            {
+                throw new RuntimeException(e);
+            }
+        } catch(IOException | RuntimeException e)
+        {
+            throw new RuntimeException(e);
+        }
+        
+        sort(people);
+        
+        return people;
+    }
+    
+    public static void sort(LinkedList<Contact> people)
+    {
+        Collections.sort(people, Contact.Comparator());
     }
 }

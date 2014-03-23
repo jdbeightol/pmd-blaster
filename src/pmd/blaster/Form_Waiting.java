@@ -2,7 +2,7 @@ package pmd.blaster;
 
 import java.awt.Cursor;
 
-public class WaitingForm extends javax.swing.JDialog
+public class Form_Waiting extends javax.swing.JDialog
 {
     public interface Waitable
     {
@@ -11,7 +11,7 @@ public class WaitingForm extends javax.swing.JDialog
     
     public static void wait(java.awt.Frame parent, String message, final Waitable f)
     {
-        final WaitingForm dialog = new WaitingForm(parent, true);
+        final Form_Waiting dialog = new Form_Waiting(parent, true);
         
         dialog.jLabel1.setText(message);
         dialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -31,7 +31,7 @@ public class WaitingForm extends javax.swing.JDialog
         
     }
     
-    public WaitingForm(java.awt.Frame parent, boolean modal)
+    public Form_Waiting(java.awt.Frame parent, boolean modal)
     {
         super(parent, modal);
         initComponents();
@@ -45,8 +45,7 @@ public class WaitingForm extends javax.swing.JDialog
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
@@ -105,16 +104,16 @@ public class WaitingForm extends javax.swing.JDialog
             }
         } catch (ClassNotFoundException ex)
         {
-            java.util.logging.Logger.getLogger(WaitingForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Form_Waiting.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex)
         {
-            java.util.logging.Logger.getLogger(WaitingForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Form_Waiting.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex)
         {
-            java.util.logging.Logger.getLogger(WaitingForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Form_Waiting.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex)
         {
-            java.util.logging.Logger.getLogger(WaitingForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Form_Waiting.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -123,7 +122,7 @@ public class WaitingForm extends javax.swing.JDialog
         {
             public void run()
             {
-                WaitingForm dialog = new WaitingForm(new javax.swing.JFrame(), true);
+                Form_Waiting dialog = new Form_Waiting(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter()
                 {
                     @Override
