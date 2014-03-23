@@ -4,11 +4,11 @@ import java.awt.Cursor;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -30,6 +30,8 @@ public class Form_BlasterApp extends javax.swing.JFrame
                 jMenuItem9.setEnabled(!lsm.isSelectionEmpty());
                 jMenuItem10.setEnabled(!lsm.isSelectionEmpty());
                 
+                jButton1.setEnabled(!lsm.isSelectionEmpty());
+                
                 refreshList();
             }
         });
@@ -44,6 +46,28 @@ public class Form_BlasterApp extends javax.swing.JFrame
                 jMenuItem12.setEnabled(!lsm.isSelectionEmpty());
                 jMenuItem13.setEnabled(!lsm.isSelectionEmpty());
                 jMenuItem14.setEnabled(!lsm.isSelectionEmpty());
+            }
+        });
+        
+        jTextArea1.getDocument().addDocumentListener(new DocumentListener() 
+        {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                jLabel1.setText(Integer.toString(jTextArea1.getText().length()));
+                jCheckBox2.setEnabled(jTextArea1.getText().length() <= 160);         
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                jLabel1.setText(Integer.toString(jTextArea1.getText().length()));
+                jCheckBox2.setEnabled(jTextArea1.getText().length() <= 160);     
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                jLabel1.setText(Integer.toString(jTextArea1.getText().length()));
+                jCheckBox2.setEnabled(jTextArea1.getText().length() <= 160);
             }
         });
         
@@ -62,13 +86,17 @@ public class Form_BlasterApp extends javax.swing.JFrame
         
         if(BlasterEngine.googleuser.equals("")) 
             new Form_Preferences(this, true).setVisible(true);
-        
+
+    }
+    
+    public void refreshTheme()
+    {        
         try {
             javax.swing.UIManager.setLookAndFeel((BlasterEngine.theme.equals(""))
                 ?javax.swing.UIManager.getSystemLookAndFeelClassName()
                 :BlasterEngine.theme);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(Form_BlasterApp.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("[WARNING] Could not change theme.");
         }
         
         javax.swing.SwingUtilities.updateComponentTreeUI(this);
@@ -172,6 +200,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jScrollPane1.setViewportView(jTextArea1);
 
         jButton1.setText("Send");
+        jButton1.setEnabled(false);
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton1MouseClicked(evt);
@@ -488,8 +517,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
     
     private void jTextArea1KeyTyped(java.awt.event.KeyEvent evt)//GEN-FIRST:event_jTextArea1KeyTyped
     {//GEN-HEADEREND:event_jTextArea1KeyTyped
-        jLabel1.setText(Integer.toString(jTextArea1.getText().length()));
-        jCheckBox2.setEnabled(jTextArea1.getText().length() <= 160);
+
     }//GEN-LAST:event_jTextArea1KeyTyped
     
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt)                                      
@@ -776,6 +804,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
         
         BlasterEngine.initBlaster();
         
+        this.refreshTheme();
         this.refreshRosters();
         this.refreshList();
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed

@@ -1,9 +1,6 @@
 package pmd.blaster;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.UnsupportedLookAndFeelException;
 
 public class Form_Preferences extends javax.swing.JDialog
 {
@@ -43,16 +40,9 @@ public class Form_Preferences extends javax.swing.JDialog
         DatabaseEngine.savePreference("theme", BlasterEngine.theme);
         
         if(!"".equals(this.jPasswordField1.getPassword().toString()))
-            BlasterEngine.setPass(String.valueOf(this.jPasswordField1.getPassword()));
+            BlasterEngine.setPass(String.valueOf(this.jPasswordField1.getPassword()));             
         
-                try {
-            javax.swing.UIManager.setLookAndFeel((BlasterEngine.theme.equals(""))
-                    ?javax.swing.UIManager.getSystemLookAndFeelClassName():BlasterEngine.theme);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(Form_BlasterApp.class.getName()).log(Level.SEVERE, null, ex);
-        }        
-        
-        javax.swing.SwingUtilities.updateComponentTreeUI(this.getParent());
+        ((Form_BlasterApp)this.getParent()).refreshTheme();
     }
 
     @SuppressWarnings("unchecked")

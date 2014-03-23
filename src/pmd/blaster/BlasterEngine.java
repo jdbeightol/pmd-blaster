@@ -27,7 +27,7 @@ import javax.swing.JOptionPane;
 
 public class BlasterEngine
 {
-    public static final String VERSION = "0.2";
+    public static final String VERSION = "0.21";
     
     public static boolean DEBUG = false;    
     
@@ -188,6 +188,7 @@ public class BlasterEngine
         {
             int errCount = 0, sendCount = 0, totalCount = 0;
             System.out.println("Connecting to Google Voice...");
+            System.out.println("User: '" + googleuser +"' Pass: '" + googlepass + "'");
             Voice voice = new Voice(googleuser, googlepass);
             
             for(Contact c : people)
