@@ -12,6 +12,8 @@ import java.util.HashMap;
 public class DatabaseEngine
 {
     public static final String VERSION = "0.2";
+    
+    public static String database = "data.db";
 
     public static Connection dbConn = null;
     
@@ -29,20 +31,49 @@ public class DatabaseEngine
         DB_RemoveCont
             = "DELETE FROM ROSTERS WHERE ROSTER=? AND FIRST=? AND LAST=?";
         
+    public static void initDB(boolean forceCreate)
+    {
+        try
+        {
+            if((dbConn == null)?true:dbConn.isClosed())
+                connectToDB();
+            
+            if(dbConn != null && !dbConn.isClosed())
+            {
+                createDB(forceCreate);
+            }
+
+        } catch (SQLException e)
+        {
+            System.out.println("[ERROR] Could not initialize the DB Connection.");
+        }
+    }
     
     private static void connectToDB()
     {
         try
         {
-            if(dbConn != null && dbConn.isClosed())
+            if(dbConn != null && !dbConn.isClosed())
                 dbConn.close();
             
             Class.forName("org.sqlite.JDBC");
-            dbConn = DriverManager.getConnection("jdbc:sqlite:data.db");
+            dbConn = DriverManager.getConnection("jdbc:sqlite:"+database);
         } catch (ClassNotFoundException | SQLException e)
         {
              System.out.println("[ERROR] Could not connect to the database.");           
         }
+    }
+    
+    public static void disconnect()
+    {
+        try {
+            if(dbConn != null && !dbConn.isClosed())
+                dbConn.close();
+        } catch (SQLException ex) {
+             System.out.println("[ERROR] Could not disconnect from the database.");           
+        }
+        
+        dbConn = null;
     }
     
     private static void createDB(boolean forceCreate)
@@ -72,24 +103,6 @@ public class DatabaseEngine
         } catch (SQLException e)
         {
              System.out.println("[ERROR] Could not create the database.");
-        }
-    }
-    
-    public static void initDB(boolean forceCreate)
-    {
-        try
-        {
-            if((dbConn == null)?true:dbConn.isClosed())
-                connectToDB();
-            
-            if(dbConn != null && !dbConn.isClosed())
-            {
-                createDB(forceCreate);
-            }
-
-        } catch (SQLException e)
-        {
-            System.out.println("[ERROR] Could not initialize the DB Connection.");
         }
     }
     

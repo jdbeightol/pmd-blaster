@@ -146,9 +146,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
         jMenuItem15 = new javax.swing.JMenuItem();
         jSeparator7 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem16 = new javax.swing.JMenuItem();
         jMenuItem17 = new javax.swing.JMenuItem();
-        jSeparator5 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem16 = new javax.swing.JMenuItem();
+        jSeparator8 = new javax.swing.JPopupMenu.Separator();
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("PMD Announce");
@@ -388,14 +389,6 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jMenu3.add(jMenuItem15);
         jMenu3.add(jSeparator7);
 
-        jMenuItem16.setText("Desktop Test");
-        jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem16ActionPerformed(evt);
-            }
-        });
-        jMenu3.add(jMenuItem16);
-
         jMenuItem17.setText("Enable Unstable Components");
         jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -403,7 +396,24 @@ public class Form_BlasterApp extends javax.swing.JFrame
             }
         });
         jMenu3.add(jMenuItem17);
-        jMenu3.add(jSeparator5);
+
+        jMenuItem16.setText("Browser Test");
+        jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem16ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem16);
+        jMenu3.add(jSeparator8);
+
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("Use Debug Database");
+        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jCheckBoxMenuItem1);
 
         jMenuBar1.add(jMenu3);
 
@@ -697,7 +707,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
         try
         {
-            java.awt.Desktop.getDesktop().browse(new java.net.URI("www.google.com"));
+            java.awt.Desktop.getDesktop().browse(new java.net.URI("http://www.google.com/"));
         }
         catch(IOException | URISyntaxException e)
         {
@@ -756,15 +766,28 @@ public class Form_BlasterApp extends javax.swing.JFrame
     }//GEN-LAST:event_jMenuItem18ActionPerformed
 
     private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
-          if (evt.getClickCount() == 2)
-              editContact();
+        if (evt.getClickCount() == 2)
+            editContact();
     }//GEN-LAST:event_jList1MouseClicked
+
+    private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
+        DatabaseEngine.disconnect();
+        DatabaseEngine.database = (!jCheckBoxMenuItem1.isSelected())?"data.db":"debug.db";
+        
+        BlasterEngine.initBlaster();
+        
+        this.refreshRosters();
+        this.refreshList();
+    }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 
     public static void main(String args[])
     {
         for(String s : args)
             if(s.equalsIgnoreCase("--debug"))
+            {
                 BlasterEngine.DEBUG = true;
+                DatabaseEngine.database = "debug.db";
+            }
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable()
@@ -781,6 +804,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -816,9 +840,9 @@ public class Form_BlasterApp extends javax.swing.JFrame
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
-    private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JPopupMenu.Separator jSeparator7;
+    private javax.swing.JPopupMenu.Separator jSeparator8;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
