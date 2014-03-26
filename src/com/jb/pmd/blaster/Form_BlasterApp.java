@@ -1,4 +1,4 @@
-package pmd.blaster;
+package com.jb.pmd.blaster;
 
 import java.awt.Cursor;
 import java.io.IOException;
@@ -560,7 +560,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-            Form_Waiting.wait(this, "Sending messages...", new pmd.blaster.Form_Waiting.Waitable()
+            Form_Waiting.wait(this, "Sending messages...", new com.jb.pmd.blaster.Form_Waiting.Waitable()
             {
                 @Override
                 public void execute()

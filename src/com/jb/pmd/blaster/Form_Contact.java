@@ -1,8 +1,9 @@
-package pmd.blaster;
+package com.jb.pmd.blaster;
 
 public class Form_Contact extends javax.swing.JDialog {
 
     private Contact contact = null;
+    public long id = -1;
     
     public Form_Contact(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -19,6 +20,7 @@ public class Form_Contact extends javax.swing.JDialog {
         
         if(defaultValue != null)
         {
+            a.id = defaultValue.id;
             a.jTextField1.setText(defaultValue.first);
             a.jTextField2.setText(defaultValue.last);
             a.jTextField3.setText(defaultValue.phone);
@@ -145,7 +147,7 @@ public class Form_Contact extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.contact = new Contact(jTextField1.getText(), jTextField2.getText(),
+        this.contact = new Contact(id, jTextField1.getText(), jTextField2.getText(),
                 jTextField4.getText(), jTextField3.getText());
         
         this.dispose();

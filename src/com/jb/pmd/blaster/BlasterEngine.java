@@ -1,4 +1,4 @@
-package pmd.blaster;
+package com.jb.pmd.blaster;
 
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
@@ -310,7 +310,7 @@ public static LinkedList<Contact> parseCSVFile(String filename)
                     last = row[lastIndex];
                 
                 if(!(email.equals("") && phone.equals("")))
-                    people.add(new Contact(first.trim(),last.trim(),
+                    people.add(new Contact(-1, first.trim(),last.trim(),
                             email.trim(),phone.trim()));
             }
             

@@ -1,5 +1,5 @@
 
-package pmd.blaster;
+package com.jb.pmd.blaster;
 
 import java.awt.Cursor;
 import java.io.File;

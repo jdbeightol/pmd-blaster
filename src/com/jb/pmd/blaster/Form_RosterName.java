@@ -1,20 +1,22 @@
-package pmd.blaster;
+package com.jb.pmd.blaster;
 
 import javax.swing.DefaultComboBoxModel;
 
-public class Form_SelectRoster extends javax.swing.JDialog
+public class Form_RosterName extends javax.swing.JDialog
 {
     private String rosterName = "";
+       
+    public static String getRosterName(java.awt.Frame parent, String defaultValue)
+    {
+        Form_RosterName a = new Form_RosterName(parent, true);
         
-    public static String getRoster(java.awt.Frame parent)
-    {      
-        Form_SelectRoster a = new Form_SelectRoster(parent, true);
+        a.jTextField1.setText(defaultValue);
         a.setVisible(true);
-
+        
         return a.rosterName;
     }
-    
-    public Form_SelectRoster(java.awt.Frame parent, boolean modal)
+        
+    public Form_RosterName(java.awt.Frame parent, boolean modal)
     {
         super(parent, modal);
         
@@ -24,11 +26,6 @@ public class Form_SelectRoster extends javax.swing.JDialog
         
         this.getRootPane().setDefaultButton(this.jButton1);
         this.setLocationRelativeTo(null);
-        
-        for(String s : BlasterEngine.getRosters())
-            model.addElement(s);
-        
-        this.jComboBox1.setModel(model);
     }
 
     @SuppressWarnings("unchecked")
@@ -36,17 +33,17 @@ public class Form_SelectRoster extends javax.swing.JDialog
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Select a Roster");
+        setTitle("Roster Name");
         setResizable(false);
 
-        jLabel1.setText("Choose a Roster");
+        jLabel1.setText("Roster Name");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jTextField1.setText("NewRoster");
 
         jButton1.setText("Ok");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -70,16 +67,16 @@ public class Form_SelectRoster extends javax.swing.JDialog
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jTextField1))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 238, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 190, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jButton1)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -88,8 +85,8 @@ public class Form_SelectRoster extends javax.swing.JDialog
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
@@ -100,17 +97,24 @@ public class Form_SelectRoster extends javax.swing.JDialog
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        rosterName = "";
+        this.rosterName = "";
         
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        rosterName = jComboBox1.getSelectedItem().toString();
+        String roster = jTextField1.getText();
         
-        this.dispose();
+        if(BlasterEngine.getRosters().contains(roster))
+            javax.swing.JOptionPane.showMessageDialog(null, 
+                    roster + " already exists.");
+        
+        else
+        {
+            this.rosterName = roster;
+            this.dispose();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
-
 
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -125,13 +129,13 @@ public class Form_SelectRoster extends javax.swing.JDialog
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Form_SelectRoster.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Form_RosterName.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Form_SelectRoster.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Form_RosterName.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Form_SelectRoster.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Form_RosterName.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Form_SelectRoster.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Form_RosterName.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -157,7 +161,7 @@ public class Form_SelectRoster extends javax.swing.JDialog
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

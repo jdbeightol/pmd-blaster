@@ -1,19 +1,14 @@
-package pmd.blaster;
+package com.jb.pmd.blaster;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.FileReader;
-
-import java.util.LinkedList;
-import java.util.Collections;
 import java.util.Comparator;
 
 public class Contact
 {
+    public long id;
     public String first, last, email, phone;
 
     public Contact()
-    {   first = ""; last = ""; email = ""; phone = "";  }
+    {   id = -1; first = ""; last = ""; email = ""; phone = "";  }
     
     @Override
     public String toString()
@@ -26,12 +21,14 @@ public class Contact
     
     public Contact(Contact c)
     {
+        this.id = c.id;
         this.first = c.first; this.last = c.last;
         this.email = c.email; this.phone = c.phone;
     }
     
-    public Contact(String first, String last, String email, String phone)
+    public Contact(long id, String first, String last, String email, String phone)
     {
+        this.id = -1;
         this.first = first; this.last = last;
         this.email = email; this.phone = phone;
     }
@@ -43,7 +40,7 @@ public class Contact
             @Override
             public int compare(Contact t, Contact t1)
             {
-                return t.first.compareTo(t1.first);
+                return (t.first + t.last + t.id).compareTo(t1.first + t1.last + t.id);
             }
         };
     }

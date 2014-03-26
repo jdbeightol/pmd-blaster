@@ -1,4 +1,4 @@
-package pmd.blaster;
+package com.jb.pmd.blaster;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -212,6 +212,7 @@ public class DatabaseEngine
                 
                 while(rs.next())
                 {
+                    int i = rs.getInt("ID");
                     String r = rs.getString("ROSTER"),
                             f = rs.getString("FIRST"),
                             l = rs.getString("LAST"),
@@ -221,7 +222,7 @@ public class DatabaseEngine
                     if(!hashMapReturn.containsKey(r))
                         hashMapReturn.put(r, new LinkedList<Contact>());
                     
-                    hashMapReturn.get(r).add(new Contact(f, l, e, p));
+                    hashMapReturn.get(r).add(new Contact(i, f, l, e, p));
                 }
             }
             
