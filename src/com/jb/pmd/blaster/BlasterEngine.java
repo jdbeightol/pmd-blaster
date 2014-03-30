@@ -5,24 +5,30 @@ import com.restfb.FacebookClient;
 import com.restfb.FacebookClient.AccessToken;
 import com.restfb.Parameter;
 import com.restfb.types.FacebookType;
+
 import com.techventus.server.voice.Voice;
+
 import gvjava.org.json.JSONException;
 import gvjava.org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.Set;
+
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+
 import javax.swing.JOptionPane;
 
 public class BlasterEngine
@@ -129,6 +135,11 @@ public class BlasterEngine
     public static void removeContact(String roster, Contact contact)
     {
         getRoster(roster).remove(contact);
+    }
+       
+    public static void sort(LinkedList<Contact> people)
+    {
+        Collections.sort(people, Contact.Comparator());
     }
 
     public static void sendEmails(String msg, LinkedList<Contact> people)
@@ -239,15 +250,7 @@ public class BlasterEngine
         
     public static void getInbox()
     {
-        //TODO Ugly as heck.  Needs work.
-        try
-        {
-            System.out.println("Connecting to Google Voice.");
-            System.out.println(new Voice(googleuser, googlepass).getInbox());
-        } catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
+
     }
     
     public static void postFacebook(String msg)
@@ -337,10 +340,5 @@ public static LinkedList<Contact> parseCSVFile(String filename)
         sort(people);
         
         return people;
-    }
-    
-    public static void sort(LinkedList<Contact> people)
-    {
-        Collections.sort(people, Contact.Comparator());
     }
 }

@@ -1,25 +1,49 @@
 package com.jb.pmd.blaster;
 
 import java.awt.Cursor;
+
 import java.io.IOException;
+
 import java.net.URISyntaxException;
+
 import java.util.LinkedList;
+
 import javax.swing.DefaultListModel;
-import javax.swing.ListSelectionModel;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class Form_BlasterApp extends javax.swing.JFrame
 {
     public Form_BlasterApp()
     {
         initComponents();
+        initListeners();
         
-        jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
+        if(!BlasterEngine.DEBUG)
+            jMenu3.setVisible(false);
+        
+        setLocationRelativeTo(null);
+
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setWrapStyleWord(true);
+        
+        BlasterEngine.initBlaster();
+        
+        if(BlasterEngine.googleuser.equals("")) 
+            new Form_Preferences(this, true).setVisible(true);
+
+        refreshRosters();
+        refreshList();        
+    }
+    
+    private void initListeners()
+    {
+                jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
         {
             @Override
             public void valueChanged(ListSelectionEvent e) 
@@ -70,36 +94,6 @@ public class Form_BlasterApp extends javax.swing.JFrame
                 jCheckBox2.setEnabled(jTextArea1.getText().length() <= 160);
             }
         });
-        
-        if(!BlasterEngine.DEBUG)
-            jMenu3.setVisible(false);
-        
-        setLocationRelativeTo(null);
-
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setWrapStyleWord(true);
-        
-        BlasterEngine.initBlaster();
-        
-        this.refreshRosters();
-        this.refreshList();
-        
-        if(BlasterEngine.googleuser.equals("")) 
-            new Form_Preferences(this, true).setVisible(true);
-
-    }
-    
-    public void refreshTheme()
-    {        
-        try {
-            javax.swing.UIManager.setLookAndFeel((BlasterEngine.theme.equals(""))
-                ?javax.swing.UIManager.getSystemLookAndFeelClassName()
-                :BlasterEngine.theme);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            System.out.println("[WARNING] Could not change theme.");
-        }
-        
-        javax.swing.SwingUtilities.updateComponentTreeUI(this);
     }
     
     private void refreshRosters()
@@ -128,7 +122,258 @@ public class Form_BlasterApp extends javax.swing.JFrame
         
         jList1.setModel(model);
     }
+        
+    public void refreshTheme()
+    {        
+        try {
+            javax.swing.UIManager.setLookAndFeel((BlasterEngine.theme.equals(""))
+                ?javax.swing.UIManager.getSystemLookAndFeelClassName()
+                :BlasterEngine.theme);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            System.out.println("[WARNING] Could not change theme.");
+        }
+        
+        javax.swing.SwingUtilities.updateComponentTreeUI(this);
+    }
     
+    private void newRoster()
+    {
+        String newRoster = Form_RosterName.getRosterName(this, "NewRoster");
+
+        if(!newRoster.equals(""))
+        {
+            LinkedList<Contact> roster = new LinkedList();
+
+            BlasterEngine.addRoster(newRoster, roster);
+            DatabaseEngine.saveRoster(newRoster, roster);
+
+            System.out.println(newRoster + " created.");
+        }
+        
+        refreshRosters();
+    }
+    
+    private void send()
+    {
+        if(jTable1.getSelectedRow() > -1)
+        {
+            final LinkedList<Contact> bros = BlasterEngine.getRoster(
+                    (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0));
+
+            final String msg = jTextArea1.getText();
+            final boolean email = jCheckBox1.isEnabled()
+                                  && jCheckBox1.isSelected(),                              
+                          text  = jCheckBox2.isEnabled() 
+                                  && jCheckBox2.isSelected(),
+                          fbook = jCheckBox3.isEnabled()
+                                  && jCheckBox3.isSelected();
+
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+            Form_Waiting.wait(this, "Sending messages...", new com.jb.pmd.blaster.Form_Waiting.Waitable()
+            {
+                @Override
+                public void execute()
+                {
+                    if (email)
+                        BlasterEngine.sendEmails(msg, bros);
+                    if (text)
+                        BlasterEngine.sendSMS(msg, bros);
+                    if (fbook)
+                        BlasterEngine.postFacebook(msg);
+                }
+            });
+
+            jTextArea1.setText("");
+            jLabel1.setText("0");
+
+            setCursor(Cursor.getDefaultCursor());
+        }
+    }
+    
+    private void addContact()
+    {
+        if(jTable1.getSelectedRow() > -1)
+        {
+            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Contact c = Form_Contact.getContact(this, null);
+            
+            if( c != null)
+            {            
+                BlasterEngine.addContact(roster, c);
+                DatabaseEngine.saveContact(roster, c);
+                System.out.println("Adding " + c.first + " to the roster.");
+            }
+            
+            refreshList();
+        }
+    }
+
+    private void removeContact()
+    {
+        if(jTable1.getSelectedRow() > -1)
+        {
+            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            
+            BlasterEngine.removeRoster(roster);
+            DatabaseEngine.removeRoster(roster);
+
+            System.out.println("Removing " + roster + ".");
+        }
+        
+        refreshRosters();
+    }
+
+    private void duplicateContact()
+    {
+        if(jTable1.getSelectedRow() > -1)
+        {
+            String  oldName = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0),
+                    newName = Form_RosterName.getRosterName(this, "Copy of " + oldName);
+        
+            LinkedList<Contact> oldList = BlasterEngine.getRoster(oldName);
+            LinkedList<Contact> newList = new LinkedList();
+            
+            if(oldList != null)
+            {
+                for(Contact c : oldList)
+                        newList.add(new Contact(c));
+                    
+                BlasterEngine.addRoster(newName, newList);
+                DatabaseEngine.saveRoster(newName, BlasterEngine.getRoster(newName));
+                System.out.println("Duplicated " + oldName + " as " + newName + ".");
+            }        
+        }
+        
+        refreshRosters();
+    }
+    
+    private void moveContactToRoster()
+    {
+        if(jTable1.getSelectedRow() > -1 && jList1.getSelectedIndex() > -1)
+        {
+            String oldRoster = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            String newRoster = Form_SelectRoster.getRoster(this);
+            Contact c = (Contact)jList1.getSelectedValue();
+            
+            if( !newRoster.equals(""))
+            {
+                BlasterEngine.addContact(newRoster, c);
+                BlasterEngine.removeContact(oldRoster, (Contact)jList1.getSelectedValue());
+                
+                DatabaseEngine.saveRoster(oldRoster, BlasterEngine.getRoster(oldRoster));
+                DatabaseEngine.saveRoster(newRoster, BlasterEngine.getRoster(newRoster));
+                
+                System.out.println("Moved " + c.first + " to " + newRoster +".");
+            }
+            
+            refreshList();
+        }
+    }
+    
+    private void copyContactToRoster()
+    {
+        if(jTable1.getSelectedRow() > -1 && jList1.getSelectedIndex() > -1)
+        {
+            String newRoster = Form_SelectRoster.getRoster(this);
+            Contact c = (Contact)jList1.getSelectedValue();
+            
+            if( !newRoster.equals(""))
+            {
+                BlasterEngine.addContact(newRoster, new Contact(c));
+                
+                DatabaseEngine.saveRoster(newRoster, BlasterEngine.getRoster(newRoster));
+                
+                System.out.println("Copied " + c.first + " to " + newRoster +".");
+            }
+            
+            refreshList();
+        }
+    }
+           
+    private void editContact()
+    {
+        if(jTable1.getSelectedRow() > -1 && jList1.getSelectedIndex() > -1)
+        {
+            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Contact c = Form_Contact.getContact(this, (Contact)jList1.getSelectedValue());
+            
+            if( c != null)
+            {
+                BlasterEngine.removeContact(roster, (Contact)jList1.getSelectedValue());
+                BlasterEngine.addContact(roster, c);
+                
+                DatabaseEngine.saveRoster(roster, BlasterEngine.getRoster(roster));
+                
+                System.out.println("Changed " + c.first + "'s information.");
+            }
+            
+            refreshList();
+        }
+    }
+        
+    private void renameContact()
+    {
+        if(jTable1.getSelectedRow() > -1)
+        {
+            String  oldName = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0),
+                    newName = Form_RosterName.getRosterName(this, oldName);
+        
+            BlasterEngine.addRoster(newName, BlasterEngine.getRoster(oldName));
+            BlasterEngine.removeRoster(oldName);
+            
+            DatabaseEngine.removeRoster(oldName);
+            DatabaseEngine.saveRoster(newName, BlasterEngine.getRoster(newName));
+            
+            System.out.println("Renaming " + oldName + " to " + newName + ".");
+        }
+        
+        refreshRosters();
+    }
+
+    private void toggleDebugDB()
+    {
+        DatabaseEngine.disconnect();
+        DatabaseEngine.database = (!jCheckBoxMenuItem1.isSelected())?"data.db":"debug.db";
+        
+        BlasterEngine.initBlaster();
+        
+        refreshTheme();
+        refreshRosters();
+        refreshList();
+    }
+    
+    private void enableUnstableComponents()
+    {
+        jCheckBox3.setEnabled(true);
+    }
+    
+    private void desktopTest()
+    {
+        try
+        {
+            java.awt.Desktop.getDesktop().browse(new java.net.URI("http://www.google.com/"));
+        }
+        catch(IOException | URISyntaxException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    private void purgeRosters()
+    {
+        BlasterEngine.purgeRosters(true, true, true);
+        DatabaseEngine.purgeRosters(true, true, true);
+        System.out.println("Rosters purged from database.");
+    }
+    
+    private void purgePreferences()
+    {
+        BlasterEngine.purgePreferences(true, true, true);
+        DatabaseEngine.purgePreferences(true, true, true);
+        System.out.println("Preferences purged from database.");
+    }
+        
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -184,28 +429,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
-        jTextArea1.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-                jTextArea1InputMethodTextChanged(evt);
-            }
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-                jTextArea1CaretPositionChanged(evt);
-            }
-        });
-        jTextArea1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                jTextArea1KeyTyped(evt);
-            }
-        });
         jScrollPane1.setViewportView(jTextArea1);
 
         jButton1.setText("Send");
         jButton1.setEnabled(false);
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
-            }
-        });
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -248,11 +475,6 @@ public class Form_BlasterApp extends javax.swing.JFrame
             }
         ));
         jTable1.setTableHeader(null);
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
-            }
-        });
         jScrollPane4.setViewportView(jTable1);
 
         jLabel2.setText("Contacts");
@@ -508,289 +730,88 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jTextArea1CaretPositionChanged(java.awt.event.InputMethodEvent evt)                                                
-    {}                                               
-
-    private void jTextArea1InputMethodTextChanged(java.awt.event.InputMethodEvent evt)                                                  
-    {}  
     
-    private void jTextArea1KeyTyped(java.awt.event.KeyEvent evt)//GEN-FIRST:event_jTextArea1KeyTyped
-    {//GEN-HEADEREND:event_jTextArea1KeyTyped
-
-    }//GEN-LAST:event_jTextArea1KeyTyped
-    
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt)                                      
-    {}
-    
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem2ActionPerformed
-    {//GEN-HEADEREND:event_jMenuItem2ActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
+    {//GEN-HEADEREND:event_jButton1ActionPerformed
+        send();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem1ActionPerformed
     {//GEN-HEADEREND:event_jMenuItem1ActionPerformed
-        Form_ImportRoster ar = new Form_ImportRoster(this, true);
-        
-        ar.setVisible(true);
-        
-        this.refreshRosters();
-        this.refreshList();
+        Form_ImportRoster.importRoster(this);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem2ActionPerformed
+    {//GEN-HEADEREND:event_jMenuItem2ActionPerformed
+        dispose();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem3ActionPerformed
     {//GEN-HEADEREND:event_jMenuItem3ActionPerformed
-        new Form_Preferences(this, true).setVisible(true);
+        Form_Preferences.showPreferences(this);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
-    {//GEN-HEADEREND:event_jButton1ActionPerformed
-        if(jTable1.getSelectedRow() > -1)
-        {
-            final LinkedList<Contact> bros = BlasterEngine.getRoster(
-                    (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0));
-
-            final String msg = jTextArea1.getText();
-            final boolean email = jCheckBox1.isEnabled()
-                                  && jCheckBox1.isSelected(),                              
-                          text  = jCheckBox2.isEnabled() 
-                                  && jCheckBox2.isSelected(),
-                          fbook = jCheckBox3.isEnabled()
-                                  && jCheckBox3.isSelected();
-
-            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
-            Form_Waiting.wait(this, "Sending messages...", new com.jb.pmd.blaster.Form_Waiting.Waitable()
-            {
-                @Override
-                public void execute()
-                {
-                    if (email)
-                        BlasterEngine.sendEmails(msg, bros);
-                    if (text)
-                        BlasterEngine.sendSMS(msg, bros);
-                    if (fbook)
-                        BlasterEngine.postFacebook(msg);
-                }
-            });
-
-            jTextArea1.setText("");
-            jLabel1.setText("0");
-
-            this.setCursor(Cursor.getDefaultCursor());
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem4ActionPerformed
     {//GEN-HEADEREND:event_jMenuItem4ActionPerformed
-        BlasterEngine.purgeRosters(true, true, true);
-        DatabaseEngine.purgeRosters(true, true, true);
-        System.out.println("Rosters purged from database.");
+        purgeRosters();
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem5ActionPerformed
     {//GEN-HEADEREND:event_jMenuItem5ActionPerformed
-        BlasterEngine.purgePreferences(true, true, true);
-        DatabaseEngine.purgePreferences(true, true, true);
-        System.out.println("Preferences purged from database.");
+        purgePreferences();
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jTable1MouseClicked
-    {//GEN-HEADEREND:event_jTable1MouseClicked
-
-    }//GEN-LAST:event_jTable1MouseClicked
-
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        String newRoster = Form_RosterName.getRosterName(this, "NewRoster");
-
-        if(!newRoster.equals(""))
-        {
-            LinkedList<Contact> roster = new LinkedList();
-
-            BlasterEngine.addRoster(newRoster, roster);
-            DatabaseEngine.saveRoster(newRoster, roster);
-
-            System.out.println(newRoster + " created.");
-        }
-        
-        this.refreshRosters();
+        newRoster();
     }//GEN-LAST:event_jMenuItem6ActionPerformed
-
+    
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        if(jTable1.getSelectedRow() > -1)
-        {
-            String  oldName = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0),
-                    newName = Form_RosterName.getRosterName(this, oldName);
-        
-            BlasterEngine.addRoster(newName, BlasterEngine.getRoster(oldName));
-            BlasterEngine.removeRoster(oldName);
-            
-            DatabaseEngine.removeRoster(oldName);
-            DatabaseEngine.saveRoster(newName, BlasterEngine.getRoster(newName));
-            
-            System.out.println("Renaming " + oldName + " to " + newName + ".");
-        }
-        
-        this.refreshRosters();
+        renameContact();
     }//GEN-LAST:event_jMenuItem7ActionPerformed
+    
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        removeContact();
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        duplicateContact();
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        if(jTable1.getSelectedRow() > -1)
-        {
-            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            Contact c = Form_Contact.getContact(this, null);
-            
-            if( c != null)
-            {            
-                BlasterEngine.addContact(roster, c);
-                DatabaseEngine.saveContact(roster, c);
-                System.out.println("Adding " + c.first + " to the roster.");
-            }
-            
-            this.refreshList();
-        }
+        addContact();
     }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
+        editContact();
+    }//GEN-LAST:event_jMenuItem11ActionPerformed
+    
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        removeContact();
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
+
+    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
+        moveContactToRoster();
+    }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
         int _ = 1/0;
     }//GEN-LAST:event_jMenuItem15ActionPerformed
 
-    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        if(jTable1.getSelectedRow() > -1)
-        {
-            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            
-            BlasterEngine.removeRoster(roster);
-            DatabaseEngine.removeRoster(roster);
-
-            System.out.println("Removing " + roster + ".");
-        }
-        
-        this.refreshRosters();
-    }//GEN-LAST:event_jMenuItem8ActionPerformed
-
-    private void editContact()
-    {
-        if(jTable1.getSelectedRow() > -1 && jList1.getSelectedIndex() > -1)
-        {
-            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            Contact c = Form_Contact.getContact(this, (Contact)jList1.getSelectedValue());
-            
-            if( c != null)
-            {
-                BlasterEngine.removeContact(roster, (Contact)jList1.getSelectedValue());
-                BlasterEngine.addContact(roster, c);
-                
-                DatabaseEngine.saveRoster(roster, BlasterEngine.getRoster(roster));
-                
-                System.out.println("Changed " + c.first + "'s information.");
-            }
-            
-            this.refreshList();
-        }
-    }
-    
-    private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
-        editContact();
-    }//GEN-LAST:event_jMenuItem11ActionPerformed
-
-    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
-        if(jTable1.getSelectedRow() > -1)
-        {
-            String  oldName = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0),
-                    newName = Form_RosterName.getRosterName(this, "Copy of " + oldName);
-        
-            LinkedList<Contact> oldList = BlasterEngine.getRoster(oldName);
-            LinkedList<Contact> newList = new LinkedList();
-            
-            if(oldList != null)
-            {
-                for(Contact c : oldList)
-                        newList.add(new Contact(c));
-                    
-                BlasterEngine.addRoster(newName, newList);
-                DatabaseEngine.saveRoster(newName, BlasterEngine.getRoster(newName));
-                System.out.println("Duplicated " + oldName + " as " + newName + ".");
-            }        
-        }
-        
-        this.refreshRosters();
-    }//GEN-LAST:event_jMenuItem9ActionPerformed
-
-    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
-        if(jTable1.getSelectedRow() > -1 && jList1.getSelectedIndex() > -1)
-        {
-            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            Contact contact = (Contact)jList1.getSelectedValue();
-            
-            BlasterEngine.removeContact(roster, contact);
-            DatabaseEngine.removeContact(roster, contact);
-
-            System.out.println("Removing " + contact.first + " from the roster.");
-          
-            this.refreshList();
-        } 
-    }//GEN-LAST:event_jMenuItem12ActionPerformed
-
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
-        try
-        {
-            java.awt.Desktop.getDesktop().browse(new java.net.URI("http://www.google.com/"));
-        }
-        catch(IOException | URISyntaxException e)
-        {
-            e.printStackTrace();
-        }
+        desktopTest();
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
-    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
-        if(jTable1.getSelectedRow() > -1 && jList1.getSelectedIndex() > -1)
-        {
-            String oldRoster = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            String newRoster = Form_SelectRoster.getRoster(this);
-            Contact c = (Contact)jList1.getSelectedValue();
-            
-            if( !newRoster.equals(""))
-            {
-                BlasterEngine.addContact(newRoster, c);
-                BlasterEngine.removeContact(oldRoster, (Contact)jList1.getSelectedValue());
-                
-                DatabaseEngine.saveRoster(oldRoster, BlasterEngine.getRoster(oldRoster));
-                DatabaseEngine.saveRoster(newRoster, BlasterEngine.getRoster(newRoster));
-                
-                System.out.println("Moved " + c.first + " to " + newRoster +".");
-            }
-            
-            this.refreshList();
-        }
-    }//GEN-LAST:event_jMenuItem14ActionPerformed
-
     private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
-        if(jTable1.getSelectedRow() > -1 && jList1.getSelectedIndex() > -1)
-        {
-            String newRoster = Form_SelectRoster.getRoster(this);
-            Contact c = (Contact)jList1.getSelectedValue();
-            
-            if( !newRoster.equals(""))
-            {
-                BlasterEngine.addContact(newRoster, new Contact(c));
-                
-                DatabaseEngine.saveRoster(newRoster, BlasterEngine.getRoster(newRoster));
-                
-                System.out.println("Copied " + c.first + " to " + newRoster +".");
-            }
-            
-            this.refreshList();
-        }
+        copyContactToRoster();
     }//GEN-LAST:event_jMenuItem13ActionPerformed
 
     private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
-        jCheckBox3.setEnabled(true);
+        enableUnstableComponents();
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
-        this.refreshRosters();
-        this.refreshList();
+        refreshRosters();
+        refreshList();
     }//GEN-LAST:event_jMenuItem18ActionPerformed
 
     private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
@@ -799,14 +820,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
     }//GEN-LAST:event_jList1MouseClicked
 
     private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
-        DatabaseEngine.disconnect();
-        DatabaseEngine.database = (!jCheckBoxMenuItem1.isSelected())?"data.db":"debug.db";
-        
-        BlasterEngine.initBlaster();
-        
-        this.refreshTheme();
-        this.refreshRosters();
-        this.refreshList();
+        toggleDebugDB();
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 
     public static void main(String args[])
@@ -828,6 +842,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
             }
         });
     }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;

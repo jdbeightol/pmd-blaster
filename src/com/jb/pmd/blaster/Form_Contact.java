@@ -10,8 +10,8 @@ public class Form_Contact extends javax.swing.JDialog {
         
         initComponents();
         
-        this.getRootPane().setDefaultButton(this.jButton1);
-        this.setLocationRelativeTo(null);
+        getRootPane().setDefaultButton(jButton1);
+        setLocationRelativeTo(null);
     }
     
     public static Contact getContact(java.awt.Frame parent, Contact defaultValue)
@@ -142,40 +142,19 @@ public class Form_Contact extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        this.contact = null;
-        this.dispose();
+        contact = null;
+        dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.contact = new Contact(id, jTextField1.getText(), jTextField2.getText(),
+        contact = new Contact(id, jTextField1.getText(), jTextField2.getText(),
                 jTextField4.getText(), jTextField3.getText());
         
-        this.dispose();
+        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    public static void main(String args[]) {
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Form_Contact.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Form_Contact.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Form_Contact.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Form_Contact.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
+    public static void main(String args[]) 
+    {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 Form_Contact dialog = new Form_Contact(new javax.swing.JFrame(), true);

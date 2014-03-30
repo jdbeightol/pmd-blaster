@@ -5,6 +5,23 @@ import javax.swing.DefaultComboBoxModel;
 public class Form_SelectRoster extends javax.swing.JDialog
 {
     private String rosterName = "";
+
+    public Form_SelectRoster(java.awt.Frame parent, boolean modal)
+    {
+        super(parent, modal);
+        
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        
+        initComponents();
+        
+        getRootPane().setDefaultButton(jButton1);
+        setLocationRelativeTo(null);
+        
+        for(String s : BlasterEngine.getRosters())
+            model.addElement(s);
+        
+        jComboBox1.setModel(model);
+    }
         
     public static String getRoster(java.awt.Frame parent)
     {      
@@ -14,23 +31,6 @@ public class Form_SelectRoster extends javax.swing.JDialog
         return a.rosterName;
     }
     
-    public Form_SelectRoster(java.awt.Frame parent, boolean modal)
-    {
-        super(parent, modal);
-        
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
-        
-        initComponents();
-        
-        this.getRootPane().setDefaultButton(this.jButton1);
-        this.setLocationRelativeTo(null);
-        
-        for(String s : BlasterEngine.getRosters())
-            model.addElement(s);
-        
-        this.jComboBox1.setModel(model);
-    }
-
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -102,39 +102,17 @@ public class Form_SelectRoster extends javax.swing.JDialog
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         rosterName = "";
         
-        this.dispose();
+        dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         rosterName = jComboBox1.getSelectedItem().toString();
         
-        this.dispose();
+        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-
-    public static void main(String args[]) {
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Form_SelectRoster.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Form_SelectRoster.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Form_SelectRoster.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Form_SelectRoster.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
+    public static void main(String args[]) 
+    {
         java.awt.EventQueue.invokeLater(new Runnable()
         {
             @Override

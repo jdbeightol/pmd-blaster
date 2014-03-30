@@ -5,7 +5,19 @@ import javax.swing.DefaultComboBoxModel;
 public class Form_RosterName extends javax.swing.JDialog
 {
     private String rosterName = "";
-       
+
+    public Form_RosterName(java.awt.Frame parent, boolean modal)
+    {
+        super(parent, modal);
+        
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        
+        initComponents();
+        
+        getRootPane().setDefaultButton(jButton1);
+        setLocationRelativeTo(null);
+    }
+    
     public static String getRosterName(java.awt.Frame parent, String defaultValue)
     {
         Form_RosterName a = new Form_RosterName(parent, true);
@@ -15,17 +27,20 @@ public class Form_RosterName extends javax.swing.JDialog
         
         return a.rosterName;
     }
-        
-    public Form_RosterName(java.awt.Frame parent, boolean modal)
+    
+    private void returnRoster()
     {
-        super(parent, modal);
+     String roster = jTextField1.getText();
         
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        if(BlasterEngine.getRosters().contains(roster))
+            javax.swing.JOptionPane.showMessageDialog(null, 
+                    roster + " already exists.");
         
-        initComponents();
-        
-        this.getRootPane().setDefaultButton(this.jButton1);
-        this.setLocationRelativeTo(null);
+        else
+        {
+            rosterName = roster;
+            dispose();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -97,48 +112,17 @@ public class Form_RosterName extends javax.swing.JDialog
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        this.rosterName = "";
+        rosterName = "";
         
-        this.dispose();
+        dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String roster = jTextField1.getText();
-        
-        if(BlasterEngine.getRosters().contains(roster))
-            javax.swing.JOptionPane.showMessageDialog(null, 
-                    roster + " already exists.");
-        
-        else
-        {
-            this.rosterName = roster;
-            this.dispose();
-        }
+        returnRoster();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    public static void main(String args[]) {
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Form_RosterName.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Form_RosterName.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Form_RosterName.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Form_RosterName.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
+    public static void main(String args[]) 
+    {
         java.awt.EventQueue.invokeLater(new Runnable()
         {
             @Override

@@ -7,44 +7,55 @@ public class Form_Preferences extends javax.swing.JDialog
     public Form_Preferences(java.awt.Frame parent, boolean modal)
     {
         super(parent, modal);
-        
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
 
         initComponents();
         
-        this.getRootPane().setDefaultButton(this.jButton1);
-        this.setLocationRelativeTo(null);
+        getRootPane().setDefaultButton(jButton1);
+        setLocationRelativeTo(null);
         
-        this.jTextField1.setText(BlasterEngine.googleuser);
-        this.jTextField2.setText(BlasterEngine.smtpserver);
-        this.jTextField3.setText(BlasterEngine.smtpport);
+        initPreferences();
+        
+    }
+    
+    private void initPreferences()
+    {
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+
+        jTextField1.setText(BlasterEngine.googleuser);
+        jTextField2.setText(BlasterEngine.smtpserver);
+        jTextField3.setText(BlasterEngine.smtpport);
                         
         for (javax.swing.UIManager.LookAndFeelInfo info : 
                 javax.swing.UIManager.getInstalledLookAndFeels())
             model.addElement(info.getClassName());
         
-        this.jComboBox1.setModel(model);
+        jComboBox1.setModel(model);
         jComboBox1.setSelectedItem(BlasterEngine.theme);
     }
-    
+
     private void updatePreferences()
     {
-        BlasterEngine.googleuser = this.jTextField1.getText();
-        BlasterEngine.smtpserver = this.jTextField2.getText();
-        BlasterEngine.smtpport = this.jTextField3.getText();
-        BlasterEngine.theme = this.jComboBox1.getSelectedItem().toString();
+        BlasterEngine.googleuser = jTextField1.getText();
+        BlasterEngine.smtpserver = jTextField2.getText();
+        BlasterEngine.smtpport = jTextField3.getText();
+        BlasterEngine.theme = jComboBox1.getSelectedItem().toString();
         
         DatabaseEngine.savePreference("googleuser", BlasterEngine.googleuser);
         DatabaseEngine.savePreference("smtpserver", BlasterEngine.smtpserver);
         DatabaseEngine.savePreference("smtpport", BlasterEngine.smtpport);
         DatabaseEngine.savePreference("theme", BlasterEngine.theme);
         
-        if(!"".equals(this.jPasswordField1.getPassword().toString()))
-            BlasterEngine.setPass(String.valueOf(this.jPasswordField1.getPassword()));             
+        if(!"".equals(jPasswordField1.getPassword().toString()))
+            BlasterEngine.setPass(String.valueOf(jPasswordField1.getPassword()));             
         
-        ((Form_BlasterApp)this.getParent()).refreshTheme();
+        ((Form_BlasterApp)getParent()).refreshTheme();
     }
-
+    
+    public static void showPreferences(java.awt.Frame parent)
+    {
+        new Form_Preferences(parent, true).setVisible(true);
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -163,52 +174,17 @@ public class Form_Preferences extends javax.swing.JDialog
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
     {//GEN-HEADEREND:event_jButton1ActionPerformed
-        this.updatePreferences();
-        
-        this.dispose();
+        updatePreferences();
+        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
     {//GEN-HEADEREND:event_jButton2ActionPerformed
-        this.dispose();
+        dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[])
     {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try
-        {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
-            {
-                if ("Nimbus".equals(info.getName()))
-                {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex)
-        {
-            java.util.logging.Logger.getLogger(Form_Preferences.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex)
-        {
-            java.util.logging.Logger.getLogger(Form_Preferences.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex)
-        {
-            java.util.logging.Logger.getLogger(Form_Preferences.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex)
-        {
-            java.util.logging.Logger.getLogger(Form_Preferences.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable()
         {
             public void run()
@@ -226,6 +202,7 @@ public class Form_Preferences extends javax.swing.JDialog
             }
         });
     }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

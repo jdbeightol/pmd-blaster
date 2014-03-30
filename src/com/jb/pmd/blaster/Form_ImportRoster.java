@@ -2,8 +2,11 @@
 package com.jb.pmd.blaster;
 
 import java.awt.Cursor;
+
 import java.io.File;
+
 import java.util.LinkedList;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 
@@ -17,22 +20,27 @@ public class Form_ImportRoster extends javax.swing.JDialog
         
         initComponents();
         
-        this.getRootPane().setDefaultButton(this.jButton1);
-        this.setLocationRelativeTo(null);
+        getRootPane().setDefaultButton(jButton1);
+        setLocationRelativeTo(null);
         
         for(String s : BlasterEngine.getRosters())
             model.addElement(s);
         
-        this.jList1.setModel(model);
+        jList1.setModel(model);
         
-        if(this.jList1.getModel().getSize() > 0)
-            this.jList1.setSelectedIndex(0);
+        if(jList1.getModel().getSize() > 0)
+            jList1.setSelectedIndex(0);
         
         else
         {
-            this.jList1.setEnabled(false);
-            this.jRadioButton2.setEnabled(false);
+            jList1.setEnabled(false);
+            jRadioButton2.setEnabled(false);
         }
+    }
+    
+    public static void importRoster(java.awt.Frame parent)
+    {
+        new Form_ImportRoster(parent, true).setVisible(true);
     }
     
     @SuppressWarnings("unchecked")
@@ -155,43 +163,43 @@ public class Form_ImportRoster extends javax.swing.JDialog
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
     {//GEN-HEADEREND:event_jButton2ActionPerformed
-        this.dispose();
+        dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
     {//GEN-HEADEREND:event_jButton1ActionPerformed
-        String  filename = this.jTextField2.getText(), 
-                rName = (this.jRadioButton1.isSelected())?
-                    this.jTextField1.getText():
-                    (String)this.jList1.getSelectedValue();
+        String  filename = jTextField2.getText(), 
+                rName = (jRadioButton1.isSelected())?
+                    jTextField1.getText():
+                    (String)jList1.getSelectedValue();
 
-        if(this.jRadioButton1.isSelected() && 
-                !BlasterEngine.getRosters().contains(this.jTextField1.getText()))
+        if(jRadioButton1.isSelected() && 
+                !BlasterEngine.getRosters().contains(jTextField1.getText()))
         {
             if(new File(filename).exists() && !new File(filename).isDirectory())
             {
-                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
                 LinkedList<Contact> roster = BlasterEngine.parseCSVFile(filename);
 
                 BlasterEngine.addRoster(rName, roster);
                 DatabaseEngine.saveRoster(rName, roster);
 
-                this.setCursor(Cursor.getDefaultCursor());
+                setCursor(Cursor.getDefaultCursor());
 
-                this.dispose();
+                dispose();
             }
         }
         
         else
             javax.swing.JOptionPane.showMessageDialog(null, 
-                    this.jTextField1.getText() + " already exists.");            
+                    jTextField1.getText() + " already exists.");            
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jList1MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jList1MouseClicked
     {//GEN-HEADEREND:event_jList1MouseClicked
-        if(this.jList1.getModel().getSize() > 0)
-            this.jRadioButton2.setSelected(true);
+        if(jList1.getModel().getSize() > 0)
+            jRadioButton2.setSelected(true);
     }//GEN-LAST:event_jList1MouseClicked
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
