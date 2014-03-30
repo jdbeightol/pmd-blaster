@@ -105,11 +105,15 @@ public class Form_BlasterApp extends javax.swing.JFrame
             model.addRow(new Object[] {s});
 
         jTable1.setModel(model);
+        
+        if(jTable1.getSelectedRow() == -1 && jTable1.getRowCount() > 0)
+            jTable1.setRowSelectionInterval(0, 0);
     }
     
     private void refreshList()
     {
         DefaultListModel model = new DefaultListModel();
+        
         if(jTable1.getSelectedRow() > -1)
         {
             LinkedList<Contact> bros = BlasterEngine.getRoster(

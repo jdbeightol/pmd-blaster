@@ -29,8 +29,8 @@ public class Contact
     public Contact(long id, String first, String last, String email, String phone)
     {
         id = -1;
-        first = first; last = last;
-        email = email; phone = phone;
+        this.first = first; this.last = last;
+        this.email = email; this.phone = phone;
     }
     
     public static Comparator Comparator()
