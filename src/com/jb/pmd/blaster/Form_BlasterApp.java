@@ -39,7 +39,6 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         refreshTheme();
         refreshRosters();
-        refreshList();        
     }
     
     private void initListeners()
@@ -128,7 +127,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jList1.setModel(model);
     }
         
-    public void refreshTheme()
+    private void refreshTheme()
     {        
         try {
             javax.swing.UIManager.setLookAndFeel((BlasterEngine.theme.equals(""))
@@ -345,7 +344,6 @@ public class Form_BlasterApp extends javax.swing.JFrame
         
         refreshTheme();
         refreshRosters();
-        refreshList();
     }
     
     private void enableUnstableComponents()
@@ -753,6 +751,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem1ActionPerformed
     {//GEN-HEADEREND:event_jMenuItem1ActionPerformed
         Form_ImportRoster.importRoster(this);
+        refreshRosters();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -763,6 +762,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem3ActionPerformed
     {//GEN-HEADEREND:event_jMenuItem3ActionPerformed
         Form_Preferences.showPreferences(this);
+        refreshTheme();
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem4ActionPerformed
@@ -850,7 +850,6 @@ public class Form_BlasterApp extends javax.swing.JFrame
                 DatabaseEngine.database = "debug.db";
             }
 
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable()
         {
             @Override

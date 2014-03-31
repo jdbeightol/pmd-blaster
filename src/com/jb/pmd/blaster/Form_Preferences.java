@@ -46,9 +46,7 @@ public class Form_Preferences extends javax.swing.JDialog
         
         //TODO Unchanged password sets an empty password.
         if(!"".toCharArray().equals(jPasswordField1.getPassword()))
-            BlasterEngine.setPass(String.valueOf(jPasswordField1.getPassword()));             
-        
-        ((Form_BlasterApp)getParent()).refreshTheme();
+            BlasterEngine.setPass(String.valueOf(jPasswordField1.getPassword()));        
     }
     
     public static void showPreferences(java.awt.Frame parent)
@@ -181,26 +179,6 @@ public class Form_Preferences extends javax.swing.JDialog
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    public static void main(String args[])
-    {
-        java.awt.EventQueue.invokeLater(new Runnable()
-        {
-            public void run()
-            {
-                Form_Preferences dialog = new Form_Preferences(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter()
-                {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e)
-                    {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
