@@ -43,7 +43,8 @@ public class Form_BlasterApp extends javax.swing.JFrame
     
     private void initListeners()
     {
-                jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
+                jTable1.getSelectionModel().addListSelectionListener(
+                        new ListSelectionListener() 
         {
             @Override
             public void valueChanged(ListSelectionEvent e) 
@@ -60,7 +61,8 @@ public class Form_BlasterApp extends javax.swing.JFrame
             }
         });
         
-        jList1.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
+        jList1.getSelectionModel().addListSelectionListener(
+                new ListSelectionListener() 
         {
             @Override
             public void valueChanged(ListSelectionEvent e) 
@@ -133,7 +135,9 @@ public class Form_BlasterApp extends javax.swing.JFrame
             javax.swing.UIManager.setLookAndFeel((BlasterEngine.theme.equals(""))
                 ?javax.swing.UIManager.getSystemLookAndFeelClassName()
                 :BlasterEngine.theme);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException 
+                | IllegalAccessException | UnsupportedLookAndFeelException ex) 
+        {
             System.out.println("[WARNING] Could not change theme.");
         }
         
@@ -174,7 +178,8 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-            Form_Waiting.wait(this, "Sending messages...", new com.jb.pmd.blaster.Form_Waiting.Waitable()
+            Form_Waiting.wait(this, "Sending messages...", 
+                    new com.jb.pmd.blaster.Form_Waiting.Waitable()
             {
                 @Override
                 public void execute()
@@ -199,7 +204,8 @@ public class Form_BlasterApp extends javax.swing.JFrame
     {
         if(jTable1.getSelectedRow() > -1)
         {
-            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(),
+                    0);
             Contact c = Form_Contact.getContact(this, null);
             
             if( c != null)
@@ -217,7 +223,8 @@ public class Form_BlasterApp extends javax.swing.JFrame
     {
         if(jTable1.getSelectedRow() > -1)
         {
-            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(),
+                    0);
             
             BlasterEngine.removeRoster(roster);
             DatabaseEngine.removeRoster(roster);
@@ -232,8 +239,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
     {
         if(jTable1.getSelectedRow() > -1)
         {
-            String  oldName = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0),
-                    newName = Form_RosterName.getRosterName(this, "Copy of " + oldName);
+            String  oldName = (String)jTable1.getValueAt(
+                    jTable1.getSelectedRow(), 0),
+                    newName = Form_RosterName.getRosterName(this,
+                            "Copy of " + oldName);
         
             LinkedList<Contact> oldList = BlasterEngine.getRoster(oldName);
             LinkedList<Contact> newList = new LinkedList();
@@ -244,8 +253,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
                         newList.add(new Contact(c));
                     
                 BlasterEngine.addRoster(newName, newList);
-                DatabaseEngine.saveRoster(newName, BlasterEngine.getRoster(newName));
-                System.out.println("Duplicated " + oldName + " as " + newName + ".");
+                DatabaseEngine.saveRoster(newName, 
+                        BlasterEngine.getRoster(newName));
+                System.out.println("Duplicated " + oldName + " as " + newName 
+                        + ".");
             }        
         }
         
@@ -256,19 +267,24 @@ public class Form_BlasterApp extends javax.swing.JFrame
     {
         if(jTable1.getSelectedRow() > -1 && jList1.getSelectedIndex() > -1)
         {
-            String oldRoster = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            String oldRoster = (String)jTable1.getValueAt(
+                    jTable1.getSelectedRow(), 0);
             String newRoster = Form_SelectRoster.getRoster(this);
             Contact c = (Contact)jList1.getSelectedValue();
             
             if( !newRoster.equals(""))
             {
                 BlasterEngine.addContact(newRoster, c);
-                BlasterEngine.removeContact(oldRoster, (Contact)jList1.getSelectedValue());
+                BlasterEngine.removeContact(oldRoster, 
+                        (Contact)jList1.getSelectedValue());
                 
-                DatabaseEngine.saveRoster(oldRoster, BlasterEngine.getRoster(oldRoster));
-                DatabaseEngine.saveRoster(newRoster, BlasterEngine.getRoster(newRoster));
+                DatabaseEngine.saveRoster(oldRoster, 
+                        BlasterEngine.getRoster(oldRoster));
+                DatabaseEngine.saveRoster(newRoster, 
+                        BlasterEngine.getRoster(newRoster));
                 
-                System.out.println("Moved " + c.first + " to " + newRoster +".");
+                System.out.println("Moved " + c.first + " to " + newRoster 
+                        + ".");
             }
             
             refreshList();
@@ -286,9 +302,11 @@ public class Form_BlasterApp extends javax.swing.JFrame
             {
                 BlasterEngine.addContact(newRoster, new Contact(c));
                 
-                DatabaseEngine.saveRoster(newRoster, BlasterEngine.getRoster(newRoster));
+                DatabaseEngine.saveRoster(newRoster, 
+                        BlasterEngine.getRoster(newRoster));
                 
-                System.out.println("Copied " + c.first + " to " + newRoster +".");
+                System.out.println("Copied " + c.first + " to " + newRoster 
+                        + ".");
             }
             
             refreshList();
@@ -299,15 +317,19 @@ public class Form_BlasterApp extends javax.swing.JFrame
     {
         if(jTable1.getSelectedRow() > -1 && jList1.getSelectedIndex() > -1)
         {
-            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            Contact c = Form_Contact.getContact(this, (Contact)jList1.getSelectedValue());
+            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(),
+                    0);
+            Contact c = Form_Contact.getContact(this, 
+                    (Contact)jList1.getSelectedValue());
             
             if( c != null)
             {
-                BlasterEngine.removeContact(roster, (Contact)jList1.getSelectedValue());
+                BlasterEngine.removeContact(roster, 
+                        (Contact)jList1.getSelectedValue());
                 BlasterEngine.addContact(roster, c);
                 
-                DatabaseEngine.saveRoster(roster, BlasterEngine.getRoster(roster));
+                DatabaseEngine.saveRoster(roster, 
+                        BlasterEngine.getRoster(roster));
                 
                 System.out.println("Changed " + c.first + "'s information.");
             }
@@ -320,7 +342,8 @@ public class Form_BlasterApp extends javax.swing.JFrame
     {
         if(jTable1.getSelectedRow() > -1)
         {
-            String  oldName = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0),
+            String  oldName = (String)jTable1.getValueAt(
+                    jTable1.getSelectedRow(), 0),
                     newName = Form_RosterName.getRosterName(this, oldName);
         
             BlasterEngine.addRoster(newName, BlasterEngine.getRoster(oldName));
@@ -338,7 +361,8 @@ public class Form_BlasterApp extends javax.swing.JFrame
     private void toggleDebugDB()
     {
         DatabaseEngine.disconnect();
-        DatabaseEngine.database = (!jCheckBoxMenuItem1.isSelected())?"data.db":"debug.db";
+        DatabaseEngine.database = 
+                (!jCheckBoxMenuItem1.isSelected())?"data.db":"debug.db";
         
         BlasterEngine.initBlaster();
         
@@ -355,11 +379,12 @@ public class Form_BlasterApp extends javax.swing.JFrame
     {
         try
         {
-            java.awt.Desktop.getDesktop().browse(new java.net.URI("http://www.google.com/"));
+            java.awt.Desktop.getDesktop().browse(
+                    new java.net.URI("http://www.google.com/"));
         }
         catch(IOException | URISyntaxException e)
         {
-            e.printStackTrace();
+            System.out.println("[WARNING] Unable to open URI.");
         }
     }
     
@@ -808,7 +833,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
-        int _ = 1/0;
+        int infinity = 1/0;
     }//GEN-LAST:event_jMenuItem15ActionPerformed
 
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed

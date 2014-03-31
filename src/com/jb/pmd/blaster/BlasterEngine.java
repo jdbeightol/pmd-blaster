@@ -53,7 +53,8 @@ public class BlasterEngine
         String ss, sp;
         
         googleuser = DatabaseEngine.getPreference("googleuser");
-        googlepass = DatabaseEngine.getPreference("googlepass");
+        googlepass = EncryptionEngine.decrypt(
+                DatabaseEngine.getPreference("googlepass"));
         
         ss = DatabaseEngine.getPreference("smtpserver");
         sp = DatabaseEngine.getPreference("smtpport");
@@ -69,21 +70,25 @@ public class BlasterEngine
     public static void setPass(String pass)
     {
         googlepass = pass;
-        DatabaseEngine.savePreference("googlepass", googlepass);
+        DatabaseEngine.savePreference("googlepass", 
+                EncryptionEngine.encrypt(googlepass));
     }
     
-    public static void setConfig(String usr, String pass, String server, String port)
+    public static void setConfig(String usr, String pass, String server, 
+            String port)
     {
         googleuser = usr; googlepass = pass; smtpserver = server; smtpport = port;
     }
     
-    public static void purgeRosters(boolean confirm, boolean certain, boolean positive)
+    public static void purgeRosters(boolean confirm, boolean certain, 
+            boolean positive)
     {
         if (confirm && certain && positive)
             Rosters = null;
     }
     
-    public static void purgePreferences(boolean confirm, boolean certain, boolean positive)
+    public static void purgePreferences(boolean confirm, boolean certain, 
+            boolean positive)
     {
         if (confirm && certain && positive)
             googleuser = smtpserver = smtpport = googlepass = "";
@@ -189,7 +194,7 @@ public class BlasterEngine
             System.out.println("[Success] Email sent.");
         } catch(MessagingException e)
         {
-            throw new RuntimeException(e);
+            System.out.println("[Error] Unable to send emails.");
         }
     }
         
@@ -197,9 +202,10 @@ public class BlasterEngine
     {
         try
         {
-            int errCount = 0, sendCount = 0, totalCount = 0;
+            int errCount = 0, sendCount, totalCount = 0;
             System.out.println("Connecting to Google Voice...");
-            System.out.println("User: '" + googleuser +"' Pass: '" + googlepass + "'");
+            System.out.println("User: '" + googleuser +"' Pass: '" + googlepass 
+                    + "'");
             Voice voice = new Voice(googleuser, googlepass);
             
             for(Contact c : people)
@@ -244,7 +250,7 @@ public class BlasterEngine
             
         } catch (IOException | JSONException e)
         {
-            throw new RuntimeException(e);
+            System.out.println("[Error] Unable to send text messages.");
         }
     }
         
@@ -258,14 +264,17 @@ public class BlasterEngine
         //TODO Does not work yet.  Needs Facebook user OAUTH Token.
         AccessToken at = new DefaultFacebookClient().obtainAppAccessToken(
                 "214508892052301", "8266220a2c7b7ae8a33b4e589e8280cf");
-        System.out.println("My application access token: " + at.getAccessToken());
-        FacebookClient facebookClient = new DefaultFacebookClient(at.getAccessToken());
+        System.out.println("My application access token: " 
+                + at.getAccessToken());
+        FacebookClient facebookClient = new DefaultFacebookClient(
+                at.getAccessToken());
         
         FacebookType publishMessageResponse
                 = facebookClient.publish("me/feed", FacebookType.class, 
                 Parameter.with("message", "Test."));
         
-        System.out.println("Published message ID: " + publishMessageResponse.getId());
+        System.out.println("Published message ID: " 
+                + publishMessageResponse.getId());
     }
     
 public static LinkedList<Contact> parseCSVFile(String filename)
