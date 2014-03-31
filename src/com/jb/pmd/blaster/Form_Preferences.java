@@ -14,7 +14,6 @@ public class Form_Preferences extends javax.swing.JDialog
         setLocationRelativeTo(null);
         
         initPreferences();
-        
     }
     
     private void initPreferences()
@@ -45,7 +44,8 @@ public class Form_Preferences extends javax.swing.JDialog
         DatabaseEngine.savePreference("smtpport", BlasterEngine.smtpport);
         DatabaseEngine.savePreference("theme", BlasterEngine.theme);
         
-        if(!"".equals(jPasswordField1.getPassword().toString()))
+        //TODO Unchanged password sets an empty password.
+        if(!"".toCharArray().equals(jPasswordField1.getPassword()))
             BlasterEngine.setPass(String.valueOf(jPasswordField1.getPassword()));             
         
         ((Form_BlasterApp)getParent()).refreshTheme();
@@ -89,8 +89,6 @@ public class Form_Preferences extends javax.swing.JDialog
         jLabel3.setText("SMTP Server:");
 
         jLabel4.setText("SMTP Port");
-
-        jTextField1.setText("pmdmuzeta");
 
         jTextField2.setText("smtp.google.com");
 

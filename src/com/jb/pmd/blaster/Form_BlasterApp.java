@@ -37,6 +37,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
         if(BlasterEngine.googleuser.equals("")) 
             new Form_Preferences(this, true).setVisible(true);
 
+        refreshTheme();
         refreshRosters();
         refreshList();        
     }
@@ -418,6 +419,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jMenu3 = new javax.swing.JMenu();
         jMenuItem18 = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem19 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
@@ -617,6 +619,14 @@ public class Form_BlasterApp extends javax.swing.JFrame
         });
         jMenu3.add(jMenuItem18);
         jMenu3.add(jSeparator4);
+
+        jMenuItem19.setText("Open Database Manager");
+        jMenuItem19.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem19ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem19);
 
         jMenuItem4.setText("Purge Rosters");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
@@ -827,6 +837,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
         toggleDebugDB();
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 
+    private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
+        com.jb.db.Form_DBManager.showDBManager(DatabaseEngine.database);
+    }//GEN-LAST:event_jMenuItem19ActionPerformed
+
     public static void main(String args[])
     {
         for(String s : args)
@@ -873,6 +887,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
     private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem18;
+    private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
