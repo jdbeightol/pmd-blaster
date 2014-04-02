@@ -3,9 +3,13 @@ package com.jb.pmd.blaster;
 import java.awt.Cursor;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
+
 import java.io.IOException;
+
 import java.net.URISyntaxException;
+
 import java.util.LinkedList;
+
 import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -32,13 +36,12 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jTextArea1.setWrapStyleWord(true);
                 
         setExtendedState((DatabaseEngine.getPreference("windowstate")
-                .equals("MAXIMIZED"))
-                ?getExtendedState()|javax.swing.JFrame.MAXIMIZED_BOTH
-                :getExtendedState());
+                .equals("NORMAL"))
+                ?getExtendedState()
+                :getExtendedState()|javax.swing.JFrame.MAXIMIZED_BOTH);
         
-        //Change to welcome screen.
         if(BlasterEngine.googleuser.equals("")) 
-            new Form_Preferences(this, true).setVisible(true);
+            new Form_Welcome(this, true).setVisible(true);
 
         refreshTheme();
         refreshRosters();
@@ -52,8 +55,8 @@ public class Form_BlasterApp extends javax.swing.JFrame
             public void windowStateChanged(WindowEvent we) 
             {
                 DatabaseEngine.savePreference("windowstate",
-                        (we.getNewState() == javax.swing.JFrame.MAXIMIZED_BOTH)
-                                ?"MAXIMIZED":"");
+                        (we.getNewState() != javax.swing.JFrame.MAXIMIZED_BOTH)
+                                ?"NORMAL":"");
             }       
         });
         
