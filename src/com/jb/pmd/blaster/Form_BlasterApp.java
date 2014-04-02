@@ -1,21 +1,19 @@
 package com.jb.pmd.blaster;
 
 import java.awt.Cursor;
-
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.io.IOException;
-
 import java.net.URISyntaxException;
-
 import java.util.LinkedList;
-
 import javax.swing.DefaultListModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.UnsupportedLookAndFeelException;
 
 public class Form_BlasterApp extends javax.swing.JFrame
 {
@@ -23,6 +21,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
     {
         initComponents();
         initListeners();
+        BlasterEngine.initBlaster();
         
         if(!BlasterEngine.DEBUG)
             jMenu3.setVisible(false);
@@ -31,9 +30,13 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         jTextArea1.setLineWrap(true);
         jTextArea1.setWrapStyleWord(true);
+                
+        setExtendedState((DatabaseEngine.getPreference("windowstate")
+                .equals("MAXIMIZED"))
+                ?getExtendedState()|javax.swing.JFrame.MAXIMIZED_BOTH
+                :getExtendedState());
         
-        BlasterEngine.initBlaster();
-        
+        //Change to welcome screen.
         if(BlasterEngine.googleuser.equals("")) 
             new Form_Preferences(this, true).setVisible(true);
 
@@ -43,8 +46,19 @@ public class Form_BlasterApp extends javax.swing.JFrame
     
     private void initListeners()
     {
-                jTable1.getSelectionModel().addListSelectionListener(
-                        new ListSelectionListener() 
+        addWindowStateListener(new WindowStateListener()
+        {
+            @Override
+            public void windowStateChanged(WindowEvent we) 
+            {
+                DatabaseEngine.savePreference("windowstate",
+                        (we.getNewState() == javax.swing.JFrame.MAXIMIZED_BOTH)
+                                ?"MAXIMIZED":"");
+            }       
+        });
+        
+        jTable1.getSelectionModel().addListSelectionListener(
+                new ListSelectionListener() 
         {
             @Override
             public void valueChanged(ListSelectionEvent e) 
