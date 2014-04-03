@@ -72,7 +72,7 @@ public class CryptographyEngine
                 | BadPaddingException e)
         {
             System.out.println("[WARNING] Failed to encrypt value. Returning "
-                    + "original value.");
+                    + "the original value.");
             ret = value;
 
             throw new RuntimeException("An error in the cryptography engine "
@@ -108,7 +108,7 @@ public class CryptographyEngine
                 | IOException e)
         {
             System.out.println("[WARNING] Failed to decrypt value. Returning "
-                    + "original string.");
+                    + "the original value.");
             ret = value;
 
             throw new RuntimeException("An error in the cryptography engine "
