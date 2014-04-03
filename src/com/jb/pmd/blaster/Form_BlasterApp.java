@@ -1,5 +1,7 @@
 package com.jb.pmd.blaster;
 
+import gvjava.org.json.JSONException;
+
 import java.awt.Cursor;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
@@ -9,8 +11,13 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.mail.MessagingException;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.DocumentEvent;
@@ -196,17 +203,30 @@ public class Form_BlasterApp extends javax.swing.JFrame
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
             Form_Waiting.wait(this, "Sending messages...", 
-                    new com.jb.pmd.blaster.Form_Waiting.Waitable()
-            {
+                    new com.jb.pmd.blaster.Form_Waiting.Waitable(){
                 @Override
-                public void execute()
-                {
-                    if (email)
-                        BlasterEngine.sendEmails(msg, bros);
-                    if (text)
-                        BlasterEngine.sendSMS(msg, bros);
-                    if (fbook)
-                        BlasterEngine.postFacebook(msg);
+                public void execute(){
+                    try {
+                        if (email) BlasterEngine.sendEmails(msg, bros);    
+                    }catch (MessagingException e) {         
+                        Logger.getLogger(Form_BlasterApp.class.getName())
+                                .log(Level.SEVERE, null, e);
+                        JOptionPane.showMessageDialog(rootPane, 
+                            "There was an error sending the emails. \n"
+                            + e.getMessage());
+                    }
+                    
+                    try {
+                        if (text) BlasterEngine.sendSMS(msg, bros);
+                    }catch(JSONException|IOException|RuntimeException e) {
+                        Logger.getLogger(Form_BlasterApp.class.getName())
+                                .log(Level.SEVERE, null, e);
+                        JOptionPane.showMessageDialog(rootPane, 
+                            "There was an error sending the text messages. \n"
+                            + e.getMessage());
+                    }
+                    
+                    if (fbook) BlasterEngine.postFacebook(msg);
                 }
             });
 

@@ -142,12 +142,14 @@ public class BlasterEngine
         getRoster(roster).remove(contact);
     }
        
-    public static void sort(LinkedList<Contact> people)
+    public static LinkedList<Contact> sort(LinkedList<Contact> people)
     {
         Collections.sort(people, Contact.Comparator());
+        return people;
     }
 
     public static void sendEmails(String msg, LinkedList<Contact> people)
+            throws MessagingException
     {
         Properties smtpProp = new Properties();
         
@@ -173,90 +175,71 @@ public class BlasterEngine
                 });
         
         System.out.println("Connected.");
-        
-        try
-        {
-            Message message = new MimeMessage(smtpSession);
-            message.setFrom(new InternetAddress(googleuser));
-            
-            for(Contact c : people)
-                message.addRecipients(Message.RecipientType.TO, 
-                        InternetAddress.parse(c.email));
-                        
-            message.setSubject("Phi Mu Delta Mu Zeta Announcement");
-            message.setText(msg);
-            
-            System.out.println("Sending email...");
-            
-            if(!DEBUG)
-                Transport.send(message);
-            
-            System.out.println("[Success] Email sent.");
-        } catch(MessagingException e)
-        {
-            System.out.println("[Error] Unable to send emails.");
-        }
+
+        Message message = new MimeMessage(smtpSession);
+        message.setFrom(new InternetAddress(googleuser));
+
+        for(Contact c : people)
+            message.addRecipients(Message.RecipientType.TO, 
+                    InternetAddress.parse(c.email));
+
+        message.setSubject("Phi Mu Delta Mu Zeta Announcement");
+        message.setText(msg);
+
+        System.out.println("Sending email...");
+
+        if(!DEBUG)
+            Transport.send(message);
     }
-        
-    public static void sendSMS(String msg, LinkedList<Contact> people)
+    
+    public static void sendSMS(String msg, LinkedList<Contact> people) 
+            throws IOException, JSONException, RuntimeException
     {
-        try
+       int errCount = 0, sendCount, totalCount = 0;
+        System.out.println("Connecting to Google Voice...");
+        System.out.println("User: '" + googleuser);
+        Voice voice = new Voice(googleuser, googlepass);
+
+        for(Contact c : people)
         {
-            int errCount = 0, sendCount, totalCount = 0;
-            System.out.println("Connecting to Google Voice...");
-            System.out.println("User: '" + googleuser +"' Pass: '" + googlepass 
-                    + "'");
-            Voice voice = new Voice(googleuser, googlepass);
-            
-            for(Contact c : people)
+            sendCount = 0;
+
+            System.out.println("Sending text message to " 
+                        + c.first + " " + c.last + ".");
+
+            if(!DEBUG)
             {
-                sendCount = 0;
-     
-                System.out.println("Sending text message to " 
-                            + c.first + " " + c.last + ".");
-                
-                if(!DEBUG)
+                while(sendCount++ < 5 && !new JSONObject(voice.sendSMS(
+                        c.phone, msg)).getBoolean("ok"))
                 {
-                    while(sendCount++ < 5 && !new JSONObject(voice.sendSMS(
-                            c.phone, msg)).getBoolean("ok"))
+                    System.out.println("[Warning] Message to " + c.first 
+                            + " " + c.last + " failed.");    
+
+                    try
                     {
-                        System.out.println("[Warning] Message to " + c.first 
-                                + " " + c.last + " failed.");    
-
-                        try
-                        {
-                            Thread.sleep(1000 * 15);
-                        } catch (InterruptedException ex)
-                        {
-                            Thread.currentThread().interrupt();
-                        }
-                    }
-
-                    if(sendCount >= 5)
-                        errCount++;
-
-                    if(++totalCount % 5 == 0) try
-                    {
-                        Thread.sleep(1000*15);
+                        Thread.sleep(1000 * 15);
                     } catch (InterruptedException ex)
                     {
                         Thread.currentThread().interrupt();
                     }
                 }
+
+                if(sendCount >= 5)
+                    errCount++;
+
+                if(++totalCount % 5 == 0) try
+                {
+                    Thread.sleep(1000*15);
+                } catch (InterruptedException ex)
+                {
+                    Thread.currentThread().interrupt();
+                }
             }
-            
-            if(errCount > 0) JOptionPane.showMessageDialog(null, 
-                    "Failed to send messages to " + errCount + " contacts.");
-            
-        } catch (IOException | JSONException e)
-        {
-            System.out.println("[Error] Unable to send text messages.");
         }
-    }
-        
-    public static void getInbox()
-    {
-        
+
+        if(errCount > 0) 
+            throw new RuntimeException("Failed to send " + errCount 
+                    + " text messages.");
     }
     
     public static void postFacebook(String msg)
@@ -277,22 +260,22 @@ public class BlasterEngine
                 + publishMessageResponse.getId());
     }
     
-public static LinkedList<Contact> parseCSVFile(String filename)
+public static LinkedList<Contact> parseCSVFile(String filename) throws IOException
     {
         LinkedList<Contact> people = new LinkedList<>();
         
-        try
+        int firstIndex = -1, lastIndex = -1;
+        boolean bothInOne = false;
+        
+        try (BufferedReader csvBr = new BufferedReader(new FileReader(filename)))
         {
-            int firstIndex = -1, lastIndex = -1;
-            boolean bothInOne = false;
-            BufferedReader csvBr = new BufferedReader(new FileReader(filename));
             String line;
             
             while((line = csvBr.readLine()) != null)
             {
                 String first = "", last = "", email = "", phone = "";
                 String[] row = line.split(",");
-
+                
                 for(int i = 0; i < row.length; i++)
                 {
                     if(row[i].matches("1?-?\\d{3}-?\\d{3}-?\\d{4}"))
@@ -302,20 +285,20 @@ public static LinkedList<Contact> parseCSVFile(String filename)
                         email = row[i];
                     
                     else if(row[i].toLowerCase().matches(
-                            "(!?.*(first|last))*name.*") 
+                            "(!?.*(first|last))*name.*")
                             && firstIndex == -1 && lastIndex == -1)
                     {   firstIndex = i; bothInOne = true;   }
                     
-                    else if(row[i].toLowerCase().matches(".*first.*") 
+                    else if(row[i].toLowerCase().matches(".*first.*")
                             && firstIndex == -1)
                         firstIndex = i;
                     
-                    else if(row[i].toLowerCase().matches(".*last.*") 
+                    else if(row[i].toLowerCase().matches(".*last.*")
                             && lastIndex == -1)
                         lastIndex = i;
                 }
                 
-                if(firstIndex != -1 && row.length > firstIndex) 
+                if(firstIndex != -1 && row.length > firstIndex)
                     first = row[firstIndex];
                 
                 if(lastIndex != -1 && row.length > lastIndex)
@@ -330,24 +313,9 @@ public static LinkedList<Contact> parseCSVFile(String filename)
                 System.out.println("[Warning] Could not parse first names.");
             
             if(lastIndex == -1 && !bothInOne)
-                System.out.println("[Warning] Could not parse last names."); 
-            
-            try
-            {
-                csvBr.close();
-            } 
-            
-            catch(IOException e) 
-            {
-                throw new RuntimeException(e);
-            }
-        } catch(IOException | RuntimeException e)
-        {
-            throw new RuntimeException(e);
+                System.out.println("[Warning] Could not parse last names.");
         }
         
-        sort(people);
-        
-        return people;
+        return sort(people);
     }
 }

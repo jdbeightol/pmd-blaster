@@ -2,13 +2,14 @@
 package com.jb.pmd.blaster;
 
 import java.awt.Cursor;
-
 import java.io.File;
-
+import java.io.IOException;
 import java.util.LinkedList;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 public class Form_ImportRoster extends javax.swing.JDialog
 {
@@ -179,15 +180,26 @@ public class Form_ImportRoster extends javax.swing.JDialog
             if(new File(filename).exists() && !new File(filename).isDirectory())
             {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
-                LinkedList<Contact> roster = BlasterEngine.parseCSVFile(filename);
-
-                BlasterEngine.addRoster(rName, roster);
-                DatabaseEngine.saveRoster(rName, roster);
-
-                setCursor(Cursor.getDefaultCursor());
-
-                dispose();
+                
+                try { 
+                    LinkedList<Contact> roster = BlasterEngine.parseCSVFile(filename);
+                    
+                    BlasterEngine.addRoster(rName, roster);
+                    DatabaseEngine.saveRoster(rName, roster);
+                    
+                    dispose();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(rootPane, 
+                            "There was an error importing the chosen CSV file. \n" 
+                                    + ex.getMessage());
+                    Logger.getLogger(Form_ImportRoster.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
+                
+                finally
+                {
+                    setCursor(Cursor.getDefaultCursor());                    
+                }
             }
         }
         
