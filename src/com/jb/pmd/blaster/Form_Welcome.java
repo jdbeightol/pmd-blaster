@@ -2,7 +2,12 @@ package com.jb.pmd.blaster;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.UnsupportedLookAndFeelException;
 
 public class Form_Welcome extends javax.swing.JDialog
@@ -12,10 +17,12 @@ public class Form_Welcome extends javax.swing.JDialog
     public Form_Welcome(java.awt.Frame parent, boolean modal)
     {
         super(parent, modal);
+        
         initComponents();
         initListeners();
         
-        this.setLocationRelativeTo(null);
+        getRootPane().setDefaultButton(jButton1);
+        setLocationRelativeTo(null);
         
         DefaultComboBoxModel model = new DefaultComboBoxModel();        
         
@@ -48,9 +55,12 @@ public class Form_Welcome extends javax.swing.JDialog
                 ?javax.swing.UIManager.getSystemLookAndFeelClassName()
                 :BlasterEngine.theme);
         } catch (ClassNotFoundException | InstantiationException 
-                | IllegalAccessException | UnsupportedLookAndFeelException ex) 
-        {
-            System.out.println("[WARNING] Could not change theme.");
+                | IllegalAccessException | UnsupportedLookAndFeelException e){ 
+            Logger.getLogger(Form_BlasterApp.class.getName())
+                    .log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(rootPane, 
+                "Oops! Couldn't change the theme. \n"
+                + e.getMessage());
         }
         
         javax.swing.SwingUtilities.updateComponentTreeUI(this);
@@ -209,23 +219,23 @@ public class Form_Welcome extends javax.swing.JDialog
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         switch(step++)
         {
-/*            case 0:
-                //Account Info.
-                break;
-                
-            case 1:
-                //Adding rosters and instructions.
-                break;
-                
-            case 2:
-                //Sending a message.
-                jButton1.setText("Close");
-                break;
-  */              
-            default:
+            case 0:
                 setAccountInfo();
                 jPanel2.setVisible(false);
                 dispose();
+                break;
+                
+/*
+                case 1:
+                //TODO Adding rosters and instructions.
+                importRoster();
+                jPanel3.setVisible(false);
+                jButton1.setText("Close");
+                break;                
+*/
+                
+            default:
+                //TODO Sending a message.
                 break; 
         }
     }//GEN-LAST:event_jButton1ActionPerformed
