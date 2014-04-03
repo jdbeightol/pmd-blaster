@@ -68,10 +68,9 @@ public class BlasterEngine
     }
 
     public static void setPass(String pass)
-    {
-        googlepass = pass;
+    {        
         DatabaseEngine.savePreference("googlepass", 
-                EncryptionEngine.encrypt(googlepass));
+                EncryptionEngine.encrypt(googlepass = pass));
     }
     
     public static void setConfig(String usr, String pass, String server, 

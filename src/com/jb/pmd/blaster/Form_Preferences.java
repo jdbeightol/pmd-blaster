@@ -1,5 +1,6 @@
 package com.jb.pmd.blaster;
 
+import java.util.Arrays;
 import javax.swing.DefaultComboBoxModel;
 
 public class Form_Preferences extends javax.swing.JDialog
@@ -44,9 +45,8 @@ public class Form_Preferences extends javax.swing.JDialog
         DatabaseEngine.savePreference("smtpport", BlasterEngine.smtpport);
         DatabaseEngine.savePreference("theme", BlasterEngine.theme);
         
-        //TODO Unchanged password sets an empty password.
-        if(!"".toCharArray().equals(jPasswordField1.getPassword()))
-            BlasterEngine.setPass(String.valueOf(jPasswordField1.getPassword()));        
+        if(!"".equals(String.valueOf(jPasswordField1.getPassword())))
+            BlasterEngine.setPass(String.valueOf(jPasswordField1.getPassword()));
     }
     
     public static void showPreferences(java.awt.Frame parent)
