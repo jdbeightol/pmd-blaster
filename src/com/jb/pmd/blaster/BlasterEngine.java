@@ -29,11 +29,9 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 
-import javax.swing.JOptionPane;
-
 public class BlasterEngine
 {
-    public static final String VERSION = "0.21";
+    public static final String VERSION = "0.3";
     
     public static boolean DEBUG = false;    
     
@@ -53,7 +51,7 @@ public class BlasterEngine
         String ss, sp;
         
         googleuser = DatabaseEngine.getPreference("googleuser");
-        googlepass = EncryptionEngine.decrypt(
+        googlepass = CryptographyEngine.decrypt(
                 DatabaseEngine.getPreference("googlepass"));
         
         ss = DatabaseEngine.getPreference("smtpserver");
@@ -70,7 +68,7 @@ public class BlasterEngine
     public static void setPass(String pass)
     {        
         DatabaseEngine.savePreference("googlepass", 
-                EncryptionEngine.encrypt(googlepass = pass));
+                CryptographyEngine.encrypt(googlepass = pass));
     }
     
     public static void setConfig(String usr, String pass, String server, 

@@ -21,13 +21,15 @@ import javax.crypto.spec.PBEParameterSpec;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
-public class EncryptionEngine
+public class CryptographyEngine
 {
+    public static final String VERSION = "0.2";
+            
     private static char[] key = null;
     private static final byte[] salt = {
         (byte) 0x45, (byte) 0xab, (byte) 0xec, (byte) 0x16,
         (byte) 0x54, (byte) 0xba, (byte) 0xce, (byte) 0x61,
-    };    
+    };
     
     private static void initEncryption() throws NoSuchAlgorithmException, 
             UnsupportedEncodingException
@@ -69,7 +71,12 @@ public class EncryptionEngine
                 | UnsupportedEncodingException | IllegalBlockSizeException 
                 | BadPaddingException e)
         {
-            System.out.println("[Error] Failed to encrypt value.");
+            System.out.println("[WARNING] Failed to encrypt value. Returning "
+                    + "original value.");
+            ret = value;
+
+            throw new RuntimeException("An error in the cryptography engine "
+                    + "occured.  Your data may be at risk.");
         }
         
         return ret;
@@ -100,7 +107,12 @@ public class EncryptionEngine
                 | IllegalBlockSizeException | BadPaddingException 
                 | IOException e)
         {
-            System.out.println("[Error] Failed to decrypt value.");
+            System.out.println("[WARNING] Failed to decrypt value. Returning "
+                    + "original string.");
+            ret = value;
+
+            throw new RuntimeException("An error in the cryptography engine "
+                    + "occured.  Your data may be at risk.");
         }
         
         return ret;
