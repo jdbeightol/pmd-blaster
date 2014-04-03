@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -28,6 +30,7 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.swing.JOptionPane;
 
 public class BlasterEngine
 {
@@ -51,9 +54,16 @@ public class BlasterEngine
         String ss, sp;
         
         googleuser = DatabaseEngine.getPreference("googleuser");
-        googlepass = CryptographyEngine.decrypt(
-                DatabaseEngine.getPreference("googlepass"));
         
+        try {
+            googlepass = CryptographyEngine.decrypt(
+                    DatabaseEngine.getPreference("googlepass"));
+        } catch (RuntimeException e) {
+            Logger.getLogger(Form_BlasterApp.class.getName())
+                    .log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
         ss = DatabaseEngine.getPreference("smtpserver");
         sp = DatabaseEngine.getPreference("smtpport");
         
@@ -67,8 +77,14 @@ public class BlasterEngine
 
     public static void setPass(String pass)
     {        
-        DatabaseEngine.savePreference("googlepass", 
-                CryptographyEngine.encrypt(googlepass = pass));
+        try {
+            DatabaseEngine.savePreference("googlepass",
+                    CryptographyEngine.encrypt(googlepass = pass));
+        } catch (RuntimeException e) {
+            Logger.getLogger(Form_BlasterApp.class.getName())
+                    .log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
     
     public static void setConfig(String usr, String pass, String server, 
@@ -190,7 +206,7 @@ public class BlasterEngine
     }
     
     public static void sendSMS(String msg, LinkedList<Contact> people) 
-            throws IOException, JSONException, RuntimeException
+            throws IOException, JSONException, Exception
     {
        int errCount = 0, sendCount, totalCount = 0;
         System.out.println("Connecting to Google Voice...");
@@ -235,7 +251,7 @@ public class BlasterEngine
         }
 
         if(errCount > 0) 
-            throw new RuntimeException("Failed to send " + errCount 
+            throw new Exception("Failed to send " + errCount 
                     + " text messages.");
     }
     

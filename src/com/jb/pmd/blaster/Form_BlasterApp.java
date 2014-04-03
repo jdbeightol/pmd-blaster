@@ -1,7 +1,5 @@
 package com.jb.pmd.blaster;
 
-import gvjava.org.json.JSONException;
-
 import java.awt.Cursor;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
@@ -218,7 +216,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
                     
                     try {
                         if (text) BlasterEngine.sendSMS(msg, bros);
-                    }catch(JSONException|IOException|RuntimeException e) {
+                    }catch(Exception e) {
                         Logger.getLogger(Form_BlasterApp.class.getName())
                                 .log(Level.SEVERE, null, e);
                         JOptionPane.showMessageDialog(rootPane, 
@@ -486,6 +484,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jMenuItem15 = new javax.swing.JMenuItem();
         jSeparator7 = new javax.swing.JPopupMenu.Separator();
         jMenuItem17 = new javax.swing.JMenuItem();
+        jMenuItem20 = new javax.swing.JMenuItem();
         jMenuItem16 = new javax.swing.JMenuItem();
         jSeparator8 = new javax.swing.JPopupMenu.Separator();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
@@ -717,6 +716,14 @@ public class Form_BlasterApp extends javax.swing.JFrame
         });
         jMenu3.add(jMenuItem17);
 
+        jMenuItem20.setText("Crypography Engine Test");
+        jMenuItem20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem20ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem20);
+
         jMenuItem16.setText("Browser Test");
         jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -897,6 +904,30 @@ public class Form_BlasterApp extends javax.swing.JFrame
         com.jb.db.Form_DBManager.showDBManager(DatabaseEngine.database);
     }//GEN-LAST:event_jMenuItem19ActionPerformed
 
+    private void jMenuItem20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem20ActionPerformed
+        String output = "", test = "This is the test string.";
+        
+        System.out.println("Test string: " + test);
+        try{
+            output = CryptographyEngine.encrypt(test);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        System.out.println("Encrypted string: " + output);
+        
+        try {
+            output = CryptographyEngine.decrypt(output);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("Decrypted string: " + output);
+        
+        System.out.println("The strings are " 
+                + ((!test.equals(output))?"not ":"") + "identical.");
+    }//GEN-LAST:event_jMenuItem20ActionPerformed
+
     public static void main(String args[])
     {
         for(String s : args)
@@ -944,6 +975,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
     private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem20;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;

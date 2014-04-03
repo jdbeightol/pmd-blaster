@@ -18,8 +18,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 public class CryptographyEngine
 {
@@ -62,8 +61,8 @@ public class CryptographyEngine
             cipher.init(Cipher.ENCRYPT_MODE, k, 
                     new PBEParameterSpec(salt, 20));
             
-            ret = new BASE64Encoder().encode(
-                    cipher.doFinal(value.getBytes("UTF-8")));
+            ret = new String(Base64.encodeBase64(
+                    cipher.doFinal(value.getBytes("UTF-8"))));
         }
         catch(NoSuchAlgorithmException | InvalidKeySpecException 
                 | NoSuchPaddingException | InvalidKeyException 
@@ -99,7 +98,7 @@ public class CryptographyEngine
                     new PBEParameterSpec(salt, 20));
             
             ret = new String(cipher.doFinal(
-                    new BASE64Decoder().decodeBuffer(value)), "UTF-8");
+                    Base64.decodeBase64(value)));
         }
         catch(NoSuchAlgorithmException | InvalidKeySpecException 
                 | NoSuchPaddingException | InvalidKeyException 
