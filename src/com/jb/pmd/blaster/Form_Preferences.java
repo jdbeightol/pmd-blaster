@@ -1,6 +1,5 @@
 package com.jb.pmd.blaster;
 
-import java.util.Arrays;
 import javax.swing.DefaultComboBoxModel;
 
 public class Form_Preferences extends javax.swing.JDialog
