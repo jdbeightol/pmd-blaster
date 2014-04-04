@@ -256,6 +256,31 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
     private void removeContact()
     {
+        if(jTable1.getSelectedRow() > -1 && jList1.getSelectedIndex() > -1)
+        {
+            String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(),
+                    0);
+            Contact c = Form_Contact.getContact(this, 
+                    (Contact)jList1.getSelectedValue());
+            
+            if( c != null)
+            {
+                BlasterEngine.removeContact(roster, 
+                        (Contact)jList1.getSelectedValue());
+                
+                DatabaseEngine.saveRoster(roster, 
+                        BlasterEngine.getRoster(roster));
+                
+                System.out.println("Removed " + c.first + ".");
+            }
+            
+            refreshList();
+        }
+    }
+    
+    private void deleteRoster()
+    {
+        
         if(jTable1.getSelectedRow() > -1)
         {
             String roster = (String)jTable1.getValueAt(jTable1.getSelectedRow(),
@@ -270,7 +295,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
         refreshRosters();
     }
 
-    private void duplicateContact()
+    private void duplicateRoster()
     {
         if(jTable1.getSelectedRow() > -1)
         {
@@ -373,7 +398,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
         }
     }
         
-    private void renameContact()
+    private void renameRoster()
     {
         if(jTable1.getSelectedRow() > -1)
         {
@@ -843,15 +868,15 @@ public class Form_BlasterApp extends javax.swing.JFrame
     }//GEN-LAST:event_jMenuItem6ActionPerformed
     
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        renameContact();
+        renameRoster();
     }//GEN-LAST:event_jMenuItem7ActionPerformed
     
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        removeContact();
+        deleteRoster();
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
-        duplicateContact();
+        duplicateRoster();
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
