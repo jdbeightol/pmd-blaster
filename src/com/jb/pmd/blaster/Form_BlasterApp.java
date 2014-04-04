@@ -515,7 +515,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("PMD Announce");
+        setTitle("PMD Blaster");
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
