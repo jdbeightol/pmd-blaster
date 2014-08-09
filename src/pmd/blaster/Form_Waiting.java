@@ -1,4 +1,4 @@
-package com.jb.pmd.blaster;
+package pmd.blaster;
 
 import java.awt.Cursor;
 
@@ -39,7 +39,8 @@ public class Form_Waiting extends javax.swing.JDialog
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         jLabel1 = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();

@@ -1,4 +1,4 @@
-package com.jb.pmd.blaster;
+package pmd.blaster;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,4 +1,4 @@
-package com.jb.pmd.blaster;
+package pmd.blaster;
 
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;

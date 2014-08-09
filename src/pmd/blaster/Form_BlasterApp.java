@@ -1,4 +1,4 @@
-package com.jb.pmd.blaster;
+package pmd.blaster;
 
 import java.awt.Cursor;
 import java.awt.event.WindowEvent;
@@ -201,7 +201,7 @@ public class Form_BlasterApp extends javax.swing.JFrame
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
             Form_Waiting.wait(this, "Sending messages...", 
-                    new com.jb.pmd.blaster.Form_Waiting.Waitable(){
+                    new pmd.blaster.Form_Waiting.Waitable(){
                 @Override
                 public void execute(){
                     try {
@@ -464,7 +464,8 @@ public class Form_BlasterApp extends javax.swing.JFrame
         
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
@@ -523,8 +524,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         jButton1.setText("Send");
         jButton1.setEnabled(false);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButton1.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jButton1ActionPerformed(evt);
             }
         });
@@ -532,30 +535,33 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jCheckBox1.setSelected(true);
         jCheckBox1.setText("Email");
 
-        jCheckBox2.setSelected(true);
         jCheckBox2.setText("Text Message");
+        jCheckBox2.setEnabled(false);
 
-        jCheckBox3.setSelected(true);
         jCheckBox3.setText("Facebook");
         jCheckBox3.setEnabled(false);
 
         jLabel1.setText("0");
 
-        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+        jList1.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
                 jList1MouseClicked(evt);
             }
         });
         jScrollPane2.setViewportView(jList1);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+            new Object [][]
+            {
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null}
             },
-            new String [] {
+            new String []
+            {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
@@ -572,8 +578,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.ALT_MASK));
         jMenuItem2.setText("Exit");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem2ActionPerformed(evt);
             }
         });
@@ -584,8 +592,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jMenu2.setText("Edit");
 
         jMenuItem3.setText("Preferences...");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem3ActionPerformed(evt);
             }
         });
@@ -596,16 +606,20 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jMenu4.setText("Roster");
 
         jMenuItem6.setText("New Roster");
-        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem6ActionPerformed(evt);
             }
         });
         jMenu4.add(jMenuItem6);
 
         jMenuItem1.setText("Import Roster");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem1ActionPerformed(evt);
             }
         });
@@ -614,8 +628,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         jMenuItem7.setText("Rename Roster");
         jMenuItem7.setEnabled(false);
-        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem7ActionPerformed(evt);
             }
         });
@@ -623,8 +639,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         jMenuItem9.setText("Duplicate Roster");
         jMenuItem9.setEnabled(false);
-        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem9ActionPerformed(evt);
             }
         });
@@ -632,8 +650,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         jMenuItem8.setText("Delete Roster");
         jMenuItem8.setEnabled(false);
-        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem8ActionPerformed(evt);
             }
         });
@@ -642,8 +662,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         jMenuItem10.setText("Add Contact");
         jMenuItem10.setEnabled(false);
-        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem10ActionPerformed(evt);
             }
         });
@@ -651,8 +673,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         jMenuItem12.setText("Remove Contact");
         jMenuItem12.setEnabled(false);
-        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem12ActionPerformed(evt);
             }
         });
@@ -660,8 +684,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         jMenuItem11.setText("Edit Contact");
         jMenuItem11.setEnabled(false);
-        jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem11.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem11ActionPerformed(evt);
             }
         });
@@ -670,8 +696,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         jMenuItem14.setText("Move Contact To...");
         jMenuItem14.setEnabled(false);
-        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem14.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem14ActionPerformed(evt);
             }
         });
@@ -679,8 +707,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         jMenuItem13.setText("Copy Contact To...");
         jMenuItem13.setEnabled(false);
-        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem13.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem13ActionPerformed(evt);
             }
         });
@@ -691,8 +721,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jMenu3.setText("Debug");
 
         jMenuItem18.setText("Refresh");
-        jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem18.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem18ActionPerformed(evt);
             }
         });
@@ -700,24 +732,30 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jMenu3.add(jSeparator4);
 
         jMenuItem19.setText("Open Database Manager");
-        jMenuItem19.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem19.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem19ActionPerformed(evt);
             }
         });
         jMenu3.add(jMenuItem19);
 
         jMenuItem4.setText("Purge Rosters");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem4ActionPerformed(evt);
             }
         });
         jMenu3.add(jMenuItem4);
 
         jMenuItem5.setText("Purge Preferences");
-        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem5ActionPerformed(evt);
             }
         });
@@ -725,8 +763,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jMenu3.add(jSeparator6);
 
         jMenuItem15.setText("Crash");
-        jMenuItem15.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem15.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem15ActionPerformed(evt);
             }
         });
@@ -734,24 +774,30 @@ public class Form_BlasterApp extends javax.swing.JFrame
         jMenu3.add(jSeparator7);
 
         jMenuItem17.setText("Enable Unstable Components");
-        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem17.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem17ActionPerformed(evt);
             }
         });
         jMenu3.add(jMenuItem17);
 
         jMenuItem20.setText("Crypography Engine Test");
-        jMenuItem20.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem20.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem20ActionPerformed(evt);
             }
         });
         jMenu3.add(jMenuItem20);
 
         jMenuItem16.setText("Browser Test");
-        jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem16.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jMenuItem16ActionPerformed(evt);
             }
         });
@@ -760,8 +806,10 @@ public class Form_BlasterApp extends javax.swing.JFrame
 
         jCheckBoxMenuItem1.setSelected(true);
         jCheckBoxMenuItem1.setText("Use Debug Database");
-        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jCheckBoxMenuItem1ActionPerformed(evt);
             }
         });

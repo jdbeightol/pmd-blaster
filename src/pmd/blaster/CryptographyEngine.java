@@ -1,4 +1,4 @@
-package com.jb.pmd.blaster;
+package pmd.blaster;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -111,7 +111,7 @@ public class CryptographyEngine
             ret = value;
 
             throw new RuntimeException("An error in the cryptography engine "
-                    + "occured.  Your data may be at risk.");
+                    + "occured.");
         }
         
         return ret;
